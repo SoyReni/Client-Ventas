@@ -7,7 +7,6 @@ logs
 **/*.back.*
 
 # dependencies
-/node_modules
 /.pnp
 .pnp.js
 bower_components
