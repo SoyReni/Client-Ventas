@@ -1,0 +1,16 @@
+.modalFooter {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.form-control:focus {
+    border-color: #167bff;
+    box-shadow: none;
+}
+
+.h3 {
+    text-align: center;
+    margin: 0;
+    line-height: 1;
+    padding-bottom: 20px;
+}

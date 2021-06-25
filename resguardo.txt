@@ -1,0 +1,156 @@
+import React,{useState} from 'react';
+
+import {Col} from 'react-bootstrap';
+import {Form,Row,Control,Button,TextField} from 'react-bootstrap';
+import {listaVenta} from '../listaVenta.json';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import DatePicker from "react-datepicker";
+import {listaProductos} from '../listaProducto.json';
+import {listaDeposito} from '../listaDeposito.json';
+
+import "react-datepicker/dist/react-datepicker.css";
+import Producto from './Producto';
+import { useState } from 'react';
+
+class NuevoPedido extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state={
+            fecha:new Date("2021","06","09"),
+            listaProductos,
+            
+        }
+      
+       
+      }
+      onchange=fecha=>{
+          this.setState({fecha:fecha});
+      }
+
+     
+   
+    render(){
+
+      const [consolatxt, setConsolatxt]=useState({
+        producto:'',
+        cantidad:'',
+        precio_unitario:'',
+
+      })
+
+     
+
+
+      const arregloComponentes = this.state.listaProductos.map(
+        (listaProductos, i) => {
+            return (
+              <Producto
+                    key={i}
+                    titulo={listaProductos.titulo}
+                   
+              />
+            )
+
+        }
+    );
+      
+    
+        return (
+            <Form>
+                <Row>
+              
+                <Form.Group as={Col} controlId="formGridEmail">
+
+                <Form.Label>Fecha:  </Form.Label>
+               <a> </a>
+               <DatePicker selected={this.state.fecha} 
+                 onChange={this.onchange} ></DatePicker>
+           
+
+              <Form.Label>Producto:  </Form.Label>
+                  <a> </a>
+                <select >
+                    {this.state.listaProductos.map(
+                      (listaProductos,  i) => (
+                        <option>
+                              {(i +=1)} {}
+
+                        {listaProductos.titulo}
+
+                        </option>
+                      
+                  )
+                )
+
+            }
+
+                </select>
+
+
+                </Form.Group>
+
+
+            </Row>
+          
+
+
+            <Form.Group controlId="formGridAddress1">
+              <Form.Label>Address</Form.Label>
+              <Form.Control placeholder="1234 Main St" />
+            </Form.Group>
+          
+            <Form.Group controlId="formGridAddress2">
+              <Form.Label>Address 2</Form.Label>
+              <Form.Control placeholder="Apartment, studio, or floor" />
+            </Form.Group>
+          
+            <Row>
+              <Form.Group as={Col} controlId="formGridCity">
+                <Form.Label>City</Form.Label>
+                <Form.Control />
+              </Form.Group>
+          
+              <Form.Group as={Col} controlId="formGridState">
+                <Form.Label>Productos</Form.Label>
+
+                <Form.Control as="select" defaultValue="Choose...">
+                    {this.state.listaProductos.map(
+                          (listaProductos,  i) => (
+                            <option>
+                                  {(i +=1)} {}
+
+                            {listaProductos.titulo}
+
+                            </option>
+                          
+                      )
+                    )
+
+                }
+
+               
+
+                 
+                </Form.Control>
+              </Form.Group>
+          
+              <Form.Group as={Col} controlId="formGridZip">
+                <Form.Label>Zip</Form.Label>
+                <Form.Control />
+              </Form.Group>
+            </Row>
+          
+
+
+          </Form>
+        )
+    }
+}
+
+
+
+
+export default NuevoPedido;
+

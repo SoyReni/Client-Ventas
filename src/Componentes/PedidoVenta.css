@@ -1,0 +1,51 @@
+
+div.center {
+    text-align: right;
+}
+
+.tabla {
+    padding: 2%;
+}
+
+.llenar {
+    float: left;
+    width: 100%;
+}
+
+.container {
+    margin: 0;
+}
+
+.sin-padding {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.llenar {
+    padding: 0;
+}
+
+.boton-aceptar{
+    margin-top: 10px;
+    width: 40%;
+    height: 50px;
+}
+
+.resumen{
+    margin-top: 10px;
+    width: 40%;
+}
+
+.resumen-label{
+    text-align: left;
+    font-size: 1.2em;
+}
+
+#ruc-AC, #nombre-AC{
+    height: 10px;
+}
+
+.add-margin{
+    margin-top: 10px;
+}
