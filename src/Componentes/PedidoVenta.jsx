@@ -3,16 +3,68 @@ import axios from 'axios';
 import './PedidoVenta.css';
 import MaterialTable, { MTableToolbar } from 'material-table'
 import Typography from '@material-ui/core/Typography'
-import {Edit, Delete, Check, SaveAlt} from '@material-ui/icons'
+import { Edit, Delete, Check, SaveAlt, Visibility, RemoveShoppingCartRounded } from '@material-ui/icons'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Row } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory, Link } from 'react-router-dom';
+/*
+[{
+  "CLIENTEId":
+  {
+    "CLIENTEId": 1,
+    "ruc": 122546,
+    "nombre": "Martin",
+    "apellido": "Rios",
+    "telefono": "0985774556",
+    "correo": "soymarce@gmail.com",
+    "credito": "0"
+  },
+  "ENCARGADOId":
+  {
+    "ENCARGADOId": 3,
+    "usuario": "Ivan",
+    "contraseña": "123",
+    "nombre": "Ivan",
+    "apellido": "Go",
+    "ci": "5477357",
+    "telefono": "0985772256",
+    "correo": "IvanGo@gmail.com",
+    "direccion": "ASU"
+  },
+  "VENTAId": 1,
+  "fecha": "2021-08-26T00:00:00",
+  "estado": "PENDIENTE",
+  "total": 366714.0, "iva": 2.0
+}]*/
 
 function PedidoVenta({ isLoged }) {
   const [listaVenta, setListaVenta] = useState([])
+  const api = axios.create();
+  const [cargado, setCargado] = useState(false);
+  const [selected, setSelected] = useState([]);
+  
   const componentDidMount = (e) => {
-    axios.get("https://localhost:44307/api/APIVENTAs").then(response => {
-      setListaVenta(response.data)
+    if (!cargado) {
+      api.get("https://localhost:44307/api/APIVENTAs").then(response => {
+        setListaVenta(response.data),
+        console.log(listaVenta);
+        setCargado(true),
+        console.log(true)
+      });
+    }
+  }
+
+  const history = useHistory();
+  const verPedido = (e) => {
+    setSelected(e);
+    console.log(e);
+    console.log(selected);
+    history.push({
+      pathname: '/PedidoDetalles',
+      appState: {
+        isLoged: true,
+        pedido: selected
+      }
     });
   }
 
@@ -31,55 +83,39 @@ function PedidoVenta({ isLoged }) {
   } else {
     componentDidMount();
     return (
-      <Row className='tabla'>
-        <Table bordered hover responsive>
-          <MaterialTable
-            columns={columns}
-            data={listaVenta}
-            title='Acciones'
-            actions={[
-              rowData => ({ icon: () => <Edit/>, tooltip: <Typography>'Modificar  estado'</Typography> }),
-              rowData => ({ icon: () => <Delete/>, tooltip: <Typography>'Eliminar Pedido' </Typography>}),
-              rowData => ({ icon: () => <Check/>, tooltip: <Typography>'Facturar' </Typography> }),
-              rowData => ({ icon: () => <SaveAlt/>, tooltip: <Typography>'Emitir Factura' </Typography> })
-            ]}
-            localization={{
-              header: { actions: 'Opciones' },
-              body: {
-                deleteTooltip: 'Eliminar',
-                emptyDataSourceMessage: 'No hay elementos en la lista',
-                editRow: { deleteText: 'Estas seguro que seas eliminarlo', }
-              },
-              pagination: { labelRowsSelect: 'Filas' },
-              toolbar: { searchTooltip: 'Buscar', searchPlaceholder: 'Buscar' }
-            }}
-            components={{
-              Toolbar: props => (
-                <div>
-                  <MTableToolbar {...props} />
-                  <div color="primary" style={{ padding: '0px 10px', color: '#039be5' }}>
-                  </div>
-                </div>
-              ),
-            }}
-            options={{
-              actionsColumnIndex: -1,
-              showTitle: false,
-              search: true,
-              filtering: true,
-              headerStyle: {
-                backgroundColor: '#039be5',
-                color: '#FFF'
-              }
-            }}
-          />
-        </Table>
+      <div className='tabla'>
+        <MaterialTable
+          title='Lista de pedidos'
+          columns={columns}
+          data={listaVenta}
+          localization={{
+            header: { actions: 'Ver Pedido' },
+            body: { cemptyDataSourceMessage: 'No hay elementos en la lista' },
+            pagination: { labelRowsSelect: 'Elementos' },
+            toolbar: { searchTooltip: 'Buscar', searchPlaceholder: 'Buscar' }
+          }}
+          actions={[{
+            icon: Visibility,
+            tooltip: 'Ver Pedido',
+            onClick: (ev, rowData) => verPedido(rowData)
+          }]}
+          options={{
+            actionsColumnIndex: -1,
+            showTitle: false,
+            search: true,
+            filtering: true,
+            headerStyle: {
+              backgroundColor: '#B8B8B8',
+              color: '#FFF'
+            }
+          }}
+        />
         <div className="card-body">
           <div className="center">
-            <Button color="primary" className="btn btn-primary boton-aceptar">Nuevo Pedido </Button>
+            <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'>Nuevo Pedido </Link>
           </div>
         </div>
-      </Row>
+      </div>
     );
   }
 }

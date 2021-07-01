@@ -5,72 +5,141 @@ import { Table, TableContainer, TableCell, TableRow, TableHead, TextField } from
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Delete from '@material-ui/icons/Delete';
 import MaterialTable, { MTableToolbar } from 'material-table'
+import { Autocomplete } from '@material-ui/lab';
+import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Button } from 'reactstrap';
 import NuevoPedidoEncabezado from './NuevoPedidoEncabezado';
-import { Redirect } from 'react-router-dom';
+import { BrowserRouter, Redirect, Link, Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
+import VerPedido from './VerPedido';
+import Swal from 'sweetalert2';
+import { SentimentDissatisfiedOutlined } from '@material-ui/icons';
+
 
 function PantallaPedido({ isLoged }) {
+
   const [listaProducto, setListaProducto] = useState([]);
-  const [carrito, addItem] = useState([]);
+  const [carrito, setCarrito] = useState([]);
   const [total, setTotal] = useState(0);
-  const [iva, setIva] = useState(0); 
-  
+  const [iva, setIva] = useState(0);
+  const api = axios.create();
+  const [cargado, setCargado] = useState(false);
+  const [currentProducto, setCurrent] = useState({ producto: '', cantidad: 0, precio: 0, total: 0 });
+  const [stock, setStock] = useState(0);
+  const [precio, setPrecio] = useState(0);
+  const [subTotal, setSubtotal] = useState(0);
+  const [cantidad, setCant] = useState(1);
+  const [actual, setActual] = useState('');
+  const [inputP, setIP] = useState({ min: 0, max: 10 })
+  const tableRef = React.createRef();
+
   const componentDidMount = (e) => {
-    axios.get("https://localhost:44307/api/APISTOCK").then(response => {
-      console.log(response.data);
-      setListaProducto(response.data);
-    });
+    if (!cargado) {
+      api.get("https://localhost:44307/api/apistock").then(response => {
+        setListaProducto(response.data);
+        console.log(listaProducto);
+        setCargado(true)
+      });
+    }
   }
 
-  const sumarTotal = (val) => {
-    let nuevo = total; 
-    nuevo = total + val; 
-    setTotal(nuevo); 
+  const sumarTotal = async (e) => {
+    let nuevoTotal = total + subTotal;
+    let nuevoIva = Math.round((total + subTotal) / 11);
+    setTotal(nuevoTotal);
+    setIva(nuevoIva);
   }
 
-  const calcularIva = (e) => {
-    let nuevo = total / 11;
-    setIva(nuevo);  
+  const addItem = async (e) => {
+    var item = {
+      producto: actual,
+      cantidad: cantidad,
+      precio: precio,
+      total: subTotal,
+    }
+    sumarTotal(subTotal);
+    var nuevo = [...carrito];
+    nuevo.push(item);
+    console.log(carrito);
+    setCarrito(nuevo);
+    console.log(carrito);
   }
+
+  const setDatos = (e) => {
+    console.log(e);
+    setCurrent(e);
+    setPrecio(e.PRODUCTOId.precio);
+    setStock(e.cantidad);
+    setActual(e.PRODUCTOId.nombre);
+    var IP = { min: 0, max: e.cantidad };
+    setIP(IP);
+  }
+
+  const calcularSubtotal = async (event) => {
+    console.log(event);
+    setCant(event);
+    setSubtotal(event * precio);
+  };
 
   const columns = [
-    { align: 'left', title: 'Prodcuto', field: '', type: 'numeric' },
-    { align: 'left', title: 'Cantidad', field: '' },
-    { align: 'left', title: 'Precio', field: '' },
-    { align: 'left', title: 'Total', field: '' },
-    { align: 'left', title: 'Acciones', field: '' }
+    { align: 'left', title: 'Prodcuto', field: 'producto' },
+    { align: 'left', title: 'Cantidad', field: 'cantidad' },
+    { align: 'left', title: 'Precio unitario', field: 'precio' },
+    { align: 'left', title: 'Total', field: 'total' }
   ]
 
   if (!true) {
-    console.log('Hola');
     return (
       <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
     )
   } else {
-    componentDidMount;
+    componentDidMount();
     return (
       <Container className='pedido text-center tabla'>
         <NuevoPedidoEncabezado />
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell><TextField label="Producto"></TextField></TableCell>
-              <TableCell><TextField label="Cantidad"></TextField></TableCell>
-              <TableCell><label>Stock: 100</label></TableCell>
-              <TableCell><label>Precio u.:20.000</label></TableCell>
-              <TableCell><label>Subtotal.: 100.000</label></TableCell>
-              <TableCell><IconButton><AddBoxIcon color="primary" fontSize="large"></AddBoxIcon></IconButton></TableCell>
+              <TableCell>
+                <Autocomplete
+                  id="Producto"
+                  noOptionsText={
+                    <Typography> No se encuentra ese producto</Typography>
+                  }
+                  options={listaProducto}
+                  onChange={(e, valor) => {
+                    setDatos(valor)
+                  }}
+                  getOptionLabel={(option) => option.PRODUCTOId.nombre + " "}
+                  renderInput={(params) => <TextField {...params} label="Producto" />}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  type='number'
+                  label="Cantidad"
+                  inputProps={inputP}
+                  aria-invalid={true}
+                  onChange={(e, v) => { calcularSubtotal(e.target.value) }}
+                ></TextField>
+              </TableCell>
+              <TableCell><label>{stock}</label></TableCell>
+              <TableCell><label>Precio u.:{precio}</label></TableCell>
+              <TableCell><label>Subtotal.: {subTotal}</label></TableCell>
+              <TableCell><IconButton onClick={(e) => addItem()}><AddBoxIcon className="addbutton" fontSize="large"></AddBoxIcon></IconButton></TableCell>
             </TableRow>
           </TableHead>
         </Table>
-        <TableContainer bordered hover responsive>
-          <Table bordered hover responsive>
-            <MaterialTable columns={columns}
+        <TableContainer>
+          <Table>
+            <MaterialTable
+              tableRef={tableRef}
+              columns={columns}
               data={carrito}
               align='left'
-              actions={[ rowData => ({ icon: Delete, tooltip: 'Eliminar' })]}
+              title='Acciones'
+              actions={[rowData => ({ icon: Delete, tooltip: 'Eliminar' })]}
               options={{
                 actionsColumnIndex: -1,
                 showTitle: false,
@@ -78,33 +147,20 @@ function PantallaPedido({ isLoged }) {
                 search: false,
                 filtering: false,
                 headerStyle: {
-                  backgroundColor: '#0d6efd',
+                  backgroundColor: '#B8B8B8',
                   color: '#FFF'
                 }
               }}
               localization={{
                 emptyDataSourceMessage: <h1 style={{ marginTop: '6%', position: 'absolute', top: '16%', marginLeft: '-70px', textAlign: 'center' }}>No hay elelementos en la lista</h1>
               }}
-              components={{
-                Toolbar: (props) => (
-                  <div
-                    style={{
-                      height: "0px",
-                    }}
-                  >
-                    <MTableToolbar {...props} />
-                  </div>
-                ),
-              }}
             />
           </Table>
         </TableContainer>
-        <div classname="container text-right resumen">
-          <div className="row"><div className="col-7"></div><label className="col-5 resumen-label">Total: 110.000</label></div>
-          <div className="row"><div className="col-7"></div><label className="col-5 resumen-label">IVA: 11.000</label></div>
-          <div className="center">
-            <Button className="btn btn-primary boton-aceptar">Aceptar </Button>
-          </div>
+        <div className="container text-right resumen">
+          <div className="row"><label className="col-12 resumen-label">Total: {total}</label></div>
+          <div className="row"><label className="col-12 resumen-label">IVA: {iva}</label></div>
+          <div className="row"><Link className="col-12 btn btn-success boton-aceptar" to='/verPedido'>Guardar</Link></div>
         </div>
       </Container>
     )

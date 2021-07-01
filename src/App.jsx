@@ -9,8 +9,10 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 function App (){
         const [isLoged, setLoged] = useState(false); 
         const loged = localStorage.getItem('token');
+
         if (loged === 'true') {() => setLoged(true)}
         else {() => setLoged(false)} 
+        
         return (
             <BrowserRouter>
                 <Switch>

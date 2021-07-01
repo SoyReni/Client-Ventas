@@ -8,14 +8,15 @@ function Login({ isLoged }) {
     const [Loged, setLoged] = useState(false);
     const [empleado, setEmpleado] = useState({ usuario: '', contraseña: '' });
     const baseUrl = "https://localhost:44307/api/employee/login";
+    const api = axios.create(); 
+
     let history = useHistory();
     const Login = (e) => {
         e.preventDefault();
         const data = { usuario: empleado.usuario, contraseña: empleado.contraseña };
-        axios.post(baseUrl, data)
+        api.post(baseUrl, data)
             .then((result) => {
                 var a = localStorage.setItem('datos', JSON.stringify(result.data.UserDetails));
-                console.log('User: ', a);
                 if (result.data.status == '200') {
                     { () => setLoged(true) }
                     localStorage.setItem('token', 'true');

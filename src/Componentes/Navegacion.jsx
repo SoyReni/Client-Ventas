@@ -1,14 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Navbar, Form, Button, } from 'reactstrap';
 import GetPedidoVenta from './GetPedidoVenta';
 import Informe from './Informe';
 import PedidoVenta from './PedidoVenta';
 import PantallaPedido from './PantallaPedido';
+import VerPedido from './VerPedido';
 import { Redirect } from 'react-router-dom';
 import { BrowserRouter, Switch, Route, Link, NavLink } from 'react-router-dom';
 
 
 function Navegacion({ isLoged }) {
+    const [loged, setLoged] = useState(isLoged); 
 
     /*const Unlog = (e) => {
         this.setState({
@@ -16,6 +18,9 @@ function Navegacion({ isLoged }) {
         })
         localStorage.setItem('token', 'false'); 
     } */
+
+    
+
     if (true) {
         return (
             <BrowserRouter>
@@ -43,6 +48,7 @@ function Navegacion({ isLoged }) {
                     <Route path="/Informe" component={Informe} />
                     <Route path="/GetPedidoVenta" component={GetPedidoVenta} />
                     <Route path="/PantallaPedido" component={PantallaPedido}/>
+                    <Route path="/verPedido" component={VerPedido}/>
                     <Route path="/" component={PedidoVenta} />
                 </Switch>
             </BrowserRouter>
