@@ -7,35 +7,6 @@ import { Edit, Delete, Check, SaveAlt, Visibility, RemoveShoppingCartRounded } f
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Row } from 'reactstrap';
 import { Redirect, useHistory, Link } from 'react-router-dom';
-/*
-[{
-  "CLIENTEId":
-  {
-    "CLIENTEId": 1,
-    "ruc": 122546,
-    "nombre": "Martin",
-    "apellido": "Rios",
-    "telefono": "0985774556",
-    "correo": "soymarce@gmail.com",
-    "credito": "0"
-  },
-  "ENCARGADOId":
-  {
-    "ENCARGADOId": 3,
-    "usuario": "Ivan",
-    "contraseña": "123",
-    "nombre": "Ivan",
-    "apellido": "Go",
-    "ci": "5477357",
-    "telefono": "0985772256",
-    "correo": "IvanGo@gmail.com",
-    "direccion": "ASU"
-  },
-  "VENTAId": 1,
-  "fecha": "2021-08-26T00:00:00",
-  "estado": "PENDIENTE",
-  "total": 366714.0, "iva": 2.0
-}]*/
 
 function PedidoVenta({ isLoged }) {
   const [listaVenta, setListaVenta] = useState([])

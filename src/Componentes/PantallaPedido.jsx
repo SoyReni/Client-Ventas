@@ -9,12 +9,9 @@ import { Autocomplete } from '@material-ui/lab';
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Button } from 'reactstrap';
+import { Container} from 'reactstrap';
 import NuevoPedidoEncabezado from './NuevoPedidoEncabezado';
-import { BrowserRouter, Redirect, Link, Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
-import VerPedido from './VerPedido';
-import Swal from 'sweetalert2';
-import { SentimentDissatisfiedOutlined } from '@material-ui/icons';
+import {Redirect, Link} from 'react-router-dom';
 
 
 function PantallaPedido({ isLoged }) {
@@ -25,14 +22,20 @@ function PantallaPedido({ isLoged }) {
   const [iva, setIva] = useState(0);
   const api = axios.create();
   const [cargado, setCargado] = useState(false);
-  const [currentProducto, setCurrent] = useState({ producto: '', cantidad: 0, precio: 0, total: 0 });
   const [stock, setStock] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [subTotal, setSubtotal] = useState(0);
   const [cantidad, setCant] = useState(1);
   const [actual, setActual] = useState('');
-  const [inputP, setIP] = useState({ min: 0, max: 10 })
-  const tableRef = React.createRef();
+  const [inputP, setIP] = useState({ min: 0, max: 10 });
+
+  const location = {
+    pathname: '/verPedido',
+    state: { 
+      carro: carrito,
+      total: total,
+      iva: iva}
+  }
 
   const componentDidMount = (e) => {
     if (!cargado) {
@@ -68,7 +71,6 @@ function PantallaPedido({ isLoged }) {
 
   const setDatos = (e) => {
     console.log(e);
-    setCurrent(e);
     setPrecio(e.PRODUCTOId.precio);
     setStock(e.cantidad);
     setActual(e.PRODUCTOId.nombre);
@@ -83,7 +85,7 @@ function PantallaPedido({ isLoged }) {
   };
 
   const columns = [
-    { align: 'left', title: 'Prodcuto', field: 'producto' },
+    { align: 'left', title: 'Producto', field: 'producto' },
     { align: 'left', title: 'Cantidad', field: 'cantidad' },
     { align: 'left', title: 'Precio unitario', field: 'precio' },
     { align: 'left', title: 'Total', field: 'total' }
@@ -134,18 +136,20 @@ function PantallaPedido({ isLoged }) {
         <TableContainer>
           <Table>
             <MaterialTable
-              tableRef={tableRef}
               columns={columns}
               data={carrito}
               align='left'
               title='Acciones'
-              actions={[rowData => ({ icon: Delete, tooltip: 'Eliminar' })]}
+              actions={[rowData => ({ 
+                  icon: Delete, 
+                  tooltip: 'Eliminar' })]}
               options={{
                 actionsColumnIndex: -1,
                 showTitle: false,
                 paging: false,
                 search: false,
                 filtering: false,
+                toolbar: false,
                 headerStyle: {
                   backgroundColor: '#B8B8B8',
                   color: '#FFF'
@@ -160,7 +164,12 @@ function PantallaPedido({ isLoged }) {
         <div className="container text-right resumen">
           <div className="row"><label className="col-12 resumen-label">Total: {total}</label></div>
           <div className="row"><label className="col-12 resumen-label">IVA: {iva}</label></div>
-          <div className="row"><Link className="col-12 btn btn-success boton-aceptar" to='/verPedido'>Guardar</Link></div>
+          <div className="row">
+            <Link className="col-12 btn btn-success boton-aceptar"
+              to={location}>
+              Guardar
+            </Link>
+          </div>
         </div>
       </Container>
     )

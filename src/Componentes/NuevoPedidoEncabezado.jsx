@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Autocomplete } from '@material-ui/lab';
-import { TextField } from '@material-ui/core';
+import { TextField, Card, CardContent } from '@material-ui/core';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -47,15 +47,15 @@ function NuevoPedidoEncabezado() {
 
   const setClientePorID = async (e) => {
     setCliente(e),
-    console.log(currentCliente),
-    setID(e.ruc),
-    setClienteString(e.nombre)
+      console.log(currentCliente),
+      setID(e.ruc),
+      setClienteString(e.nombre)
   }
 
   componentDidMount();
   return (
-    <div className="container llenar">
-      <div className="row align-items-left">
+    <Card className="container llenar">
+      <CardContent className="row align-items-left">
 
         <div className="col-md-4 col-sm-12 add-margin">
           <div className="container align-items-left">
@@ -72,8 +72,8 @@ function NuevoPedidoEncabezado() {
                 <Button onMouseDown={toggleOpen} > Agregar nuevo cliente</Button>
               }
               options={listaClientes}
-              currentID = {currentID}
-              onChange={(ev, val) => {setClientePorID(val)}}
+              currentID={currentID}
+              onChange={(ev, val) => { setClientePorID(val) }}
               getOptionLabel={(option) => option.ruc + " "}
               renderInput={(params) => <TextField {...params} label="RUC" variant="outlined" />}
             />
@@ -82,64 +82,64 @@ function NuevoPedidoEncabezado() {
             <label className="border" >{currentClienteString}</label>
           </div>
         </div>
-      </div>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}>
-        <form className="container" onSubmit={handleSubmit}>
-          <DialogTitle className="row" id='add-cliente-dialog'>Agregar Cliente Nuevo</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              className="row col-12"
-              margin="dense"
-              id="ruc-nuevo"
-              label="RUC"
-              type="text"
-            ></TextField>
-            <TextField
-              autoFocus
-              className="row col-12"
-              margin="dense"
-              id="nombre-nuevo"
-              label="Nombre o Razon Social"
-              type="text"
-            ></TextField>
-            <TextField
-              className="row col-12"
-              autoFocus
-              margin="dense"
-              id="telefono-nuevo"
-              label="Telefono"
-              type="text"
-            ></TextField>
-            <TextField
-              className="row col-12"
-              autoFocus
-              margin="dense"
-              id="correo-nuevo"
-              label="Correo"
-              type="text"
-            ></TextField>
-            <TextField
-              className="row col-12"
-              autoFocus
-              margin="dense"
-              id="direccion-nuevo"
-              label="Direccion"
-              type="text"
-            ></TextField>
-          </DialogContent>
-          <DialogActions className="row col-12">
-            <div className="container">
-              <Button className="col-6" onClick={handleClose} color="primary">Cancelar</Button>
-              <Button className="col-6" type="submit" color="primary">Agregar</Button>
-            </div>
-          </DialogActions>
-        </form>
-      </Dialog>
-    </div>
+        <Dialog
+          open={open}
+          onClose={handleClose}>
+          <form className="container" onSubmit={handleSubmit}>
+            <DialogTitle className="row" id='add-cliente-dialog'>Agregar Cliente Nuevo</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                className="row col-12"
+                margin="dense"
+                id="ruc-nuevo"
+                label="RUC"
+                type="text"
+              ></TextField>
+              <TextField
+                autoFocus
+                className="row col-12"
+                margin="dense"
+                id="nombre-nuevo"
+                label="Nombre o Razon Social"
+                type="text"
+              ></TextField>
+              <TextField
+                className="row col-12"
+                autoFocus
+                margin="dense"
+                id="telefono-nuevo"
+                label="Telefono"
+                type="text"
+              ></TextField>
+              <TextField
+                className="row col-12"
+                autoFocus
+                margin="dense"
+                id="correo-nuevo"
+                label="Correo"
+                type="text"
+              ></TextField>
+              <TextField
+                className="row col-12"
+                autoFocus
+                margin="dense"
+                id="direccion-nuevo"
+                label="Direccion"
+                type="text"
+              ></TextField>
+            </DialogContent>
+            <DialogActions className="row col-12">
+              <div className="container">
+                <Button className="col-6" onClick={handleClose} color="primary">Cancelar</Button>
+                <Button className="col-6" type="submit" color="primary">Agregar</Button>
+              </div>
+            </DialogActions>
+          </form>
+        </Dialog>
+      </CardContent>
+    </Card>
   )
 
 }
