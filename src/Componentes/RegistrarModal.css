@@ -1,11 +1,15 @@
 .modalFooter {
     margin-right: auto;
     margin-left: auto;
+    
 }
-
+.Contenedor{
+    width: 50%;
+}
 .form-control:focus {
     border-color: #167bff;
     box-shadow: none;
+    width: 50%;
 }
 
 .h3 {

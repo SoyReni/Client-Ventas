@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import './PedidoVenta.css';
 import axios from 'axios';
-import { Table, TableContainer, TableCell, TableRow, TableHead, TextField } from '@material-ui/core';
+import { Table, TableContainer, TableCell, TableRow, TableHead, TextField, Card, CardContent } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Delete from '@material-ui/icons/Delete';
 import MaterialTable, { MTableToolbar } from 'material-table'
-import { Autocomplete } from '@material-ui/lab';
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container} from 'reactstrap';
-import NuevoPedidoEncabezado from './NuevoPedidoEncabezado';
-import {Redirect, Link} from 'react-router-dom';
+import { Container } from 'reactstrap';
+import { Redirect, Link } from 'react-router-dom';
+import { Autocomplete } from '@material-ui/lab';
+import "react-datepicker/dist/react-datepicker.css";
+
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
 
 function PantallaPedido({ isLoged }) {
@@ -21,23 +28,63 @@ function PantallaPedido({ isLoged }) {
   const [total, setTotal] = useState(0);
   const [iva, setIva] = useState(0);
   const api = axios.create();
-  const [cargado, setCargado] = useState(false);
+  const [cargadoClientes, setCargadoClientes] = useState(false);
   const [stock, setStock] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [subTotal, setSubtotal] = useState(0);
   const [cantidad, setCant] = useState(1);
   const [actual, setActual] = useState('');
   const [inputP, setIP] = useState({ min: 0, max: 10 });
+  const [listaClientes, setClientes] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [currentClienteString, setClienteString] = useState("Cliente");
+  const [currentCliente, setCliente] = useState([])
+  const [currentID, setID] = useState("RUC");
+  const [cargado, setCargado] = useState(false);
+
+  const clientesDidMount = (e) => {
+    if (!cargadoClientes) {
+      api.get("https://localhost:44307/api/APICLIENTE").then(response => {
+        setClientes(response.data);
+        setCargadoClientes(true)
+      });
+    }
+  };
+
+  const toggleOpen = (e) => {
+    setOpen(true);
+  };
+
+  const toggleClose = (e) => {
+    setOpen(false);
+  };
+
+  const handleClose = (e) => {
+    toggleClose();
+  };
+
+  const handleSubmit = (e) => {
+    handleClose();
+  };
+
+  const setClientePorID = async (e) => {
+      setCliente(e),
+      console.log(currentCliente),
+      setID(e.ruc),
+      setClienteString(e.nombre)
+  };
 
   const location = {
     pathname: '/verPedido',
-    state: { 
+    state: {
       carro: carrito,
       total: total,
-      iva: iva}
-  }
+      iva: iva, 
+      cliente: currentCliente
+    }
+  };
 
-  const componentDidMount = (e) => {
+  const stockDidMount = (e) => {
     if (!cargado) {
       api.get("https://localhost:44307/api/apistock").then(response => {
         setListaProducto(response.data);
@@ -45,14 +92,14 @@ function PantallaPedido({ isLoged }) {
         setCargado(true)
       });
     }
-  }
+  };
 
   const sumarTotal = async (e) => {
     let nuevoTotal = total + subTotal;
     let nuevoIva = Math.round((total + subTotal) / 11);
     setTotal(nuevoTotal);
     setIva(nuevoIva);
-  }
+  };
 
   const addItem = async (e) => {
     var item = {
@@ -67,7 +114,7 @@ function PantallaPedido({ isLoged }) {
     console.log(carrito);
     setCarrito(nuevo);
     console.log(carrito);
-  }
+  };
 
   const setDatos = (e) => {
     console.log(e);
@@ -76,7 +123,7 @@ function PantallaPedido({ isLoged }) {
     setActual(e.PRODUCTOId.nombre);
     var IP = { min: 0, max: e.cantidad };
     setIP(IP);
-  }
+  };
 
   const calcularSubtotal = async (event) => {
     console.log(event);
@@ -89,17 +136,103 @@ function PantallaPedido({ isLoged }) {
     { align: 'left', title: 'Cantidad', field: 'cantidad' },
     { align: 'left', title: 'Precio unitario', field: 'precio' },
     { align: 'left', title: 'Total', field: 'total' }
-  ]
+  ];
 
   if (!true) {
     return (
       <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
     )
   } else {
-    componentDidMount();
+    clientesDidMount();
+    stockDidMount(); 
     return (
       <Container className='pedido text-center tabla'>
-        <NuevoPedidoEncabezado />
+        <Card className="container llenar">
+          <CardContent className="row align-items-left">
+
+            <div className="col-md-4 col-sm-12 add-margin">
+              <div className="container align-items-left">
+                <div className="row align-self-end">Fecha: {new Date().toLocaleString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ''}</div>
+                <div className="row align-self-end">Encargado: Dalila Castelnovo</div>
+              </div>
+            </div>
+
+            <div className="container row col-md-8 col-sm-12">
+              <div className="col-md-6 col-sm-12 align-items-left add-margin">
+                <Autocomplete
+                  id="ruc-AC"
+                  noOptionsText={
+                    <Button onMouseDown={toggleOpen} > Agregar nuevo cliente</Button>
+                  }
+                  options={listaClientes}
+                  currentID={currentID}
+                  onChange={(ev, val) => { setClientePorID(val) }}
+                  getOptionLabel={(option) => option.ruc + " "}
+                  renderInput={(params) => <TextField {...params} label="RUC" variant="outlined" />}
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 align-items-left add-margin">
+                <label className="border" >{currentClienteString}</label>
+              </div>
+            </div>
+
+            <Dialog
+              open={open}
+              onClose={handleClose}>
+              <form className="container" onSubmit={handleSubmit}>
+                <DialogTitle className="row" id='add-cliente-dialog'>Agregar Cliente Nuevo</DialogTitle>
+                <DialogContent>
+                  <TextField
+                    autoFocus
+                    className="row col-12"
+                    margin="dense"
+                    id="ruc-nuevo"
+                    label="RUC"
+                    type="text"
+                  ></TextField>
+                  <TextField
+                    autoFocus
+                    className="row col-12"
+                    margin="dense"
+                    id="nombre-nuevo"
+                    label="Nombre o Razon Social"
+                    type="text"
+                  ></TextField>
+                  <TextField
+                    className="row col-12"
+                    autoFocus
+                    margin="dense"
+                    id="telefono-nuevo"
+                    label="Telefono"
+                    type="text"
+                  ></TextField>
+                  <TextField
+                    className="row col-12"
+                    autoFocus
+                    margin="dense"
+                    id="correo-nuevo"
+                    label="Correo"
+                    type="text"
+                  ></TextField>
+                  <TextField
+                    className="row col-12"
+                    autoFocus
+                    margin="dense"
+                    id="direccion-nuevo"
+                    label="Direccion"
+                    type="text"
+                  ></TextField>
+                </DialogContent>
+                <DialogActions className="row col-12">
+                  <div className="container">
+                    <Button className="col-6" onClick={handleClose} color="primary">Cancelar</Button>
+                    <Button className="col-6" type="submit" color="primary">Agregar</Button>
+                  </div>
+                </DialogActions>
+              </form>
+            </Dialog>
+          </CardContent>
+        </Card>
         <Table>
           <TableHead>
             <TableRow>
@@ -140,9 +273,10 @@ function PantallaPedido({ isLoged }) {
               data={carrito}
               align='left'
               title='Acciones'
-              actions={[rowData => ({ 
-                  icon: Delete, 
-                  tooltip: 'Eliminar' })]}
+              actions={[rowData => ({
+                icon: Delete,
+                tooltip: 'Eliminar'
+              })]}
               options={{
                 actionsColumnIndex: -1,
                 showTitle: false,

@@ -12,7 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
 
-function NuevoPedidoEncabezado() {
+function NuevoPedidoEncabezado({handleChange}) {
   const [listaClientes, setClientes] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentClienteString, setClienteString] = useState("Cliente");
@@ -46,10 +46,11 @@ function NuevoPedidoEncabezado() {
   }
 
   const setClientePorID = async (e) => {
-    setCliente(e),
+      setCliente(e),
       console.log(currentCliente),
       setID(e.ruc),
-      setClienteString(e.nombre)
+      setClienteString(e.nombre), 
+      handleChange(e); 
   }
 
   componentDidMount();

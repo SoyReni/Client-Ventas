@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, Divider, RadioGroup, FormControlLabel, R
 import { Container, Button } from 'reactstrap';
 
 function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
-    const [isFacturado, setFacturado] = useState(true);
-    const [isContado, setContado] = useState(false);
+    const [isFacturado, setFacturado] = useState(false);
+    const [isContado, setContado] = useState(true);
     const [datosFact, setDatosFact] = useState({
         facturaN: '001-001-1235',
         fechaEmi: "10/05/2021",
@@ -20,7 +20,7 @@ function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
         metodoPago: 'efectivo',
         pagadoCon: 150000,
         vuelto: 30000,
-        montoCuota: 18400, 
+        montoCuota: 18400,
     })
 
     const handleChange = (e) => {
@@ -37,13 +37,20 @@ function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
                         <FormControl className="col-4" component="fieldset">
                             <RadioGroup aria-label="condicion" name="cond" onChange={handleChange}>
                                 <FormControlLabel value="contado" control={<Radio />} label="Contado" />
-                                <FormControlLabel value="credito" control={<Radio />} label="credito" />
+                                <FormControlLabel value="credito" control={<Radio />} label="Credito" />
+                                <FormControlLabel value="cancelado" control={<Radio />} label="Cancelado" />
                             </RadioGroup>
                         </FormControl>
-                        <div className="col-8">Aca van las opciones de contado credito</div>
+                        <div className="col-8 row">
+                            <p className="col-12">
+                                Aca van las opciones de contado credito
+                            </p>
+                            <Button className="button button-success col-12" color="success">Imprimir Factura</Button>
+                        </div>
+
                     </CardContent>
                 </Card>
-                <Button className="button button-success" color="success">Imprimir Factura</Button>
+
             </Container>
         )
     } else if (isContado) {

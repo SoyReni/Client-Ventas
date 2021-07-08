@@ -8,9 +8,9 @@ import { Container } from 'reactstrap';
 import { Redirect, useLocation } from 'react-router-dom';
 import DatosFacturacion from './DatosFacturacion';
 
-function VerPedido({ isLoged, pedido, carro }) {
+function VerPedido({ isLoged, pedido, carro, cliente }) {
   const loc = useLocation();
-  const carrito = loc.state;
+  const data = loc.state;
 
   const [datos, setDatos] = useState({
     encargado: 'Dalila Castelnovo',
@@ -31,6 +31,7 @@ function VerPedido({ isLoged, pedido, carro }) {
       <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
     )
   } else {
+    console.log(data); 
     return (
       
       <Container className='text-center tabla'>
@@ -44,8 +45,8 @@ function VerPedido({ isLoged, pedido, carro }) {
             </div>
             <div className="col-md-6 col-sm-12">
               <div className="container align-items-left">
-                <div className="row align-self-end">Cliente: {datos.cliente}</div>
-                <div className="row align-self-end">RUC: {datos.ruc}</div>
+                <div className="row align-self-end">Cliente: {data.cliente.nombre}</div>
+                <div className="row align-self-end">RUC: {data.cliente.ruc}</div>
               </div>
             </div>
           </CardContent>
@@ -54,7 +55,7 @@ function VerPedido({ isLoged, pedido, carro }) {
           <Table>
             <MaterialTable
               columns={columns}
-              data={carrito.carro}
+              data={data.carro}
               align='left'
               title='Acciones'
               actions={[rowData => ({
@@ -79,8 +80,8 @@ function VerPedido({ isLoged, pedido, carro }) {
             />
           </Table>
         <div className="container text-right resumen">
-          <div className="row"><label className="col-12 resumen-label">Total: {carrito.total}</label></div>
-          <div className="row"><label className="col-12 resumen-label">IVA: {carrito.iva}</label></div>
+          <div className="row"><label className="col-12 resumen-label">Total: {data.total}</label></div>
+          <div className="row"><label className="col-12 resumen-label">IVA: {data.iva}</label></div>
         </div>
         </TableContainer>
         <DatosFacturacion facturado={true} contado={true} credito={false} cliente={datos.cliente} ruc={datos.ruc} />

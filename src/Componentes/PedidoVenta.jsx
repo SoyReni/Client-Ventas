@@ -8,12 +8,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Row } from 'reactstrap';
 import { Redirect, useHistory, Link } from 'react-router-dom';
 
-function PedidoVenta({ isLoged }) {
+function PedidoVenta({isLoged}) {
   const [listaVenta, setListaVenta] = useState([])
   const api = axios.create();
   const [cargado, setCargado] = useState(false);
   const [selected, setSelected] = useState([]);
-  
+  const [usuario, setUser] = useState([]);
+  const [cliente, seCliente] = useState([]); 
+
   const componentDidMount = (e) => {
     if (!cargado) {
       api.get("https://localhost:44307/api/APIVENTAs").then(response => {

@@ -1,67 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { NavItem, Nav, Navbar, Form, Button, Dropdown } from 'reactstrap';
+import GetPedidoVenta from './GetPedidoVenta';
+import FacturaEmitida from './FacturaEmitida';
+import PagoRealizado from './PagoRealizado';
+import PagoPendiente from './PagoPendiente';
 import './Informe.css';
-import MaterialTable, { MTableToolbar } from 'material-table'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Container } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link, NavLink } from 'react-router-dom';
 
 
-function Informe({ isLoged }) {
-  const [listaVenta, setListaVenta] = useState([])
-
-  const columns = [
-    { title: 'ID', field: 'i', type: 'numeric' },
-    { title: 'Fecha de emision', field: 'fecha' },
-    { title: 'Cliente', field: 'cliente' },
-    { title: 'Total', field: 'total' },
-    { title: 'IVA', field: 'iva' }
-
-  ]
-
-  if (!true) {
-    return (
-      <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
-    )
-  } else {
-    return (
-
-      <Container>
-        <div className="encabezado">
-          <div className="div3">
-            <button className="btn btn-primary">Generar Informe</button>
-          </div>
-        </div>
-
-        <Table bordered hover responsive>
-          <MaterialTable
-
-            columns={columns}
-            data={listaVenta}
-            title='Acciones'
-            components={{
-              Toolbar: props => (
-                <div>
-                  <MTableToolbar {...props} />
-                  <div color="primary" style={{ padding: '0px 10px', color: '#039be5' }}>
-                  </div>
-                </div>
-              ),
-            }}
-            options={{
-              actionsColumnIndex: -1,
-              showTitle: false,
-              search: false,
-              //  filtering: true,
-              headerStyle: {
-                backgroundColor: '#039be5',
-                color: '#FFF'
-              }
-            }}
-          />
-        </Table>
-      </Container>
-    );
-  }
+function Informe() {
+  return (
+    //color ligth se usa para sarle fondo claros y color="dark" para darle fondo oscuro
+    //md es la capaciddiad que tendra el navbar al colapsarse con el elemento dentro
+    //ms = middle o meo 
+    <BrowserRouter>
+      <Dropdown>
+        <Button className="mainmenubtn">Informe: </Button>
+        <div className="dropdown-child">
+          <a href="#"> <Link to="/Informe/FacturaEmitida" > Facturas Emitidas</Link> </a>
+          <a href="#"> <Link to="/Informe/PagoRealizado">Pagos Realizados</Link></a>
+          <a href="#"><Link to="/Informe/PagoPendiente" > Pagos Pendientes </Link> </a>
+        </div></Dropdown>
+      <Switch>
+        <Route path="/Informe/PagoRealizado">
+          <PagoRealizado />|
+        </Route>
+        <Route path="/Informe/PagoPendiente">
+          <PagoPendiente />
+        </Route>
+        <Route path="/Informe">
+          <FacturaEmitida />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
 }
-
 export default Informe;
