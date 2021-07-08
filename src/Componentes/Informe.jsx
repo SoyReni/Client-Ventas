@@ -1,11 +1,10 @@
 import React from 'react';
-import { NavItem, Nav, Navbar, Form, Button, Dropdown } from 'reactstrap';
-import GetPedidoVenta from './GetPedidoVenta';
+import { Button, Dropdown } from 'reactstrap';
 import FacturaEmitida from './FacturaEmitida';
 import PagoRealizado from './PagoRealizado';
 import PagoPendiente from './PagoPendiente';
 import './Informe.css';
-import { BrowserRouter, Switch, Route, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 
 function Informe() {
@@ -22,13 +21,13 @@ function Informe() {
           <a href="#"><Link to="/Informe/PagoPendiente" > Pagos Pendientes </Link> </a>
         </div></Dropdown>
       <Switch>
-        <Route path="/Informe/PagoRealizado">
+        <Route path="/PagoRealizado">
           <PagoRealizado />|
         </Route>
-        <Route path="/Informe/PagoPendiente">
+        <Route path="/PagoPendiente">
           <PagoPendiente />
         </Route>
-        <Route path="/Informe">
+        <Route path="/FacturaEmitida">
           <FacturaEmitida />
         </Route>
       </Switch>

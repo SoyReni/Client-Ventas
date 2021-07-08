@@ -6,23 +6,21 @@ import Typography from '@material-ui/core/Typography'
 import { Edit, Delete, Check, SaveAlt, Visibility, RemoveShoppingCartRounded } from '@material-ui/icons'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Row } from 'reactstrap';
-import { Redirect, useHistory, Link } from 'react-router-dom';
+import { Redirect, useHistory, Link, useLocation } from 'react-router-dom';
 
-function PedidoVenta({isLoged}) {
+function PedidoVenta({ isLoged }) {
   const [listaVenta, setListaVenta] = useState([])
   const api = axios.create();
   const [cargado, setCargado] = useState(false);
   const [selected, setSelected] = useState([]);
-  const [usuario, setUser] = useState([]);
-  const [cliente, seCliente] = useState([]); 
 
   const componentDidMount = (e) => {
     if (!cargado) {
       api.get("https://localhost:44307/api/APIVENTAs").then(response => {
         setListaVenta(response.data),
-        console.log(listaVenta);
+          console.log(listaVenta);
         setCargado(true),
-        console.log(true)
+          console.log(true)
       });
     }
   }
@@ -41,6 +39,21 @@ function PedidoVenta({isLoged}) {
     });
   }
 
+  const [location, setLocation] = useState([]); 
+  const definirLocation = async (e) =>{
+    var locationN = {
+      pathname: '/verPedido',
+      state: {
+        carro: [],
+        total: e.VENTAId.total,
+        iva: e.VENTAId.iva, 
+        cliente: e.CLIENTEId
+      }
+    };   
+    setLocation(locationN);  
+    console.log(location);  
+  }
+  
   const columns = [
     { align: 'left', title: 'ID', field: 'VENTAId', type: 'numeric' },
     { align: 'left', title: 'Fecha de emision', field: 'fecha' },
@@ -70,8 +83,21 @@ function PedidoVenta({isLoged}) {
           actions={[{
             icon: Visibility,
             tooltip: 'Ver Pedido',
-            onClick: (ev, rowData) => verPedido(rowData)
+            onClick: (e, v) => definirLocation(v)
           }]}
+          components={{
+            Action: props => (
+              <Link
+                to={location}
+                onClick={(event) => props.action.onClick(event, props.data)}
+                color="primary"
+                variant="contained"
+                size="small"
+              >
+                Ver
+              </Link>
+            ),
+          }}
           options={{
             actionsColumnIndex: -1,
             showTitle: false,
@@ -85,7 +111,7 @@ function PedidoVenta({isLoged}) {
         />
         <div className="card-body">
           <div className="center">
-            <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'>Nuevo Pedido </Link>
+            <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'>Nuevo Pedido</Link>
           </div>
         </div>
       </div>

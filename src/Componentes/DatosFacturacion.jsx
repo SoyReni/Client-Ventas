@@ -4,10 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './PedidoVenta.css';
 import { Card, CardContent, CardHeader, Divider, RadioGroup, FormControlLabel, Radio, FormControl } from '@material-ui/core';
 import { Container, Button } from 'reactstrap';
+import ContadoCredito from './ContadoCredito';
 
-function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
-    const [isFacturado, setFacturado] = useState(false);
-    const [isContado, setContado] = useState(true);
+function DatosFacturacion({ facturado, contado, cliente, ruc, datos}) {
+    const [isFacturado, setFacturado] = useState(facturado);
+    const [isContado, setContado] = useState(contado);
+    const [opcion, setOP] = useState("contado")
     const [datosFact, setDatosFact] = useState({
         facturaN: '001-001-1235',
         fechaEmi: "10/05/2021",
@@ -23,8 +25,8 @@ function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
         montoCuota: 18400,
     })
 
-    const handleChange = (e) => {
-        console.log(e.target.value);
+    const handleChange = async (e) => {
+        setOP(e.target.value);
     }
 
     if (!isFacturado) {
@@ -34,20 +36,16 @@ function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
                     <CardHeader className="row align-items-left encabezado" title={"Pedido listo para facturar"} subheader={"Datos de la factura"} />
                     <Divider variant="middle" style={{ background: 'black' }} />
                     <CardContent className="row align-items-left encabezado">
-                        <FormControl className="col-4" component="fieldset">
+                        <FormControl className="col-12" component="fieldset">
                             <RadioGroup aria-label="condicion" name="cond" onChange={handleChange}>
                                 <FormControlLabel value="contado" control={<Radio />} label="Contado" />
                                 <FormControlLabel value="credito" control={<Radio />} label="Credito" />
                                 <FormControlLabel value="cancelado" control={<Radio />} label="Cancelado" />
                             </RadioGroup>
                         </FormControl>
-                        <div className="col-8 row">
-                            <p className="col-12">
-                                Aca van las opciones de contado credito
-                            </p>
-                            <Button className="button button-success col-12" color="success">Imprimir Factura</Button>
+                        <div className="col-12 row">
+                            <ContadoCredito opcion={opcion} cliente={cliente} ruc={ruc}></ContadoCredito>
                         </div>
-
                     </CardContent>
                 </Card>
 
@@ -65,8 +63,6 @@ function DatosFacturacion({ facturado, contado, credito, cliente, ruc }) {
                         <div className="col-12 align-items-left">Condicion: Contado</div>
                         <div className="col-6 align-items-left">Total: {datosFact.monto}</div>
                         <div className="col-6 align-items-left">Iva: {datosFact.iva}</div>
-                        <div className="col-6 align-items-left">Pagado con: {datosFact.pagadoCon}</div>
-                        <div className="col-6 align-items-left">Vuelto emitido: {datosFact.vuelto}</div>
                     </CardContent>
                 </Card>
                 <Button className="button button-success" color="success">Imprimir Factura</Button>

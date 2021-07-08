@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import './Informe.css';
-import { makeStyles } from '@material-ui/core/styles';
-import MaterialTable, { MTableToolbar, Toolbar, PdfExport } from 'material-table'
+import MaterialTable, { MTableToolbar } from 'material-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { listaInforme } from '../listaInforme.json'
 import { Table, Container } from 'react-bootstrap';
-import Select from 'react-select';
-import { Avatar, GridList, Grid, TableRow, TableCell } from '@material-ui/core';
-
-
+import {TableRow, TableCell } from '@material-ui/core';
 
 function PagoRealizado() {
     const [listaInforme, setLista] = useState([]);

@@ -20,7 +20,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-
 function PantallaPedido({ isLoged }) {
 
   const [listaProducto, setListaProducto] = useState([]);
@@ -107,6 +106,7 @@ function PantallaPedido({ isLoged }) {
       cantidad: cantidad,
       precio: precio,
       total: subTotal,
+      faturado: false, 
     }
     sumarTotal(subTotal);
     var nuevo = [...carrito];

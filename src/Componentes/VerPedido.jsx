@@ -11,12 +11,11 @@ import DatosFacturacion from './DatosFacturacion';
 function VerPedido({ isLoged, pedido, carro, cliente }) {
   const loc = useLocation();
   const data = loc.state;
+  
 
   const [datos, setDatos] = useState({
     encargado: 'Dalila Castelnovo',
     fecha: '12/12/21',
-    cliente: 'Ada Melgarejo',
-    ruc: '515678-3'
   });
 
   const columns = [
@@ -84,7 +83,7 @@ function VerPedido({ isLoged, pedido, carro, cliente }) {
           <div className="row"><label className="col-12 resumen-label">IVA: {data.iva}</label></div>
         </div>
         </TableContainer>
-        <DatosFacturacion facturado={true} contado={true} credito={false} cliente={datos.cliente} ruc={datos.ruc} />
+        <DatosFacturacion facturado={datos.facturado} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} />
       </Container>
     )
   }
