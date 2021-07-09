@@ -33,6 +33,7 @@ function PantallaPedido({ isLoged }) {
   const [subTotal, setSubtotal] = useState(0);
   const [cantidad, setCant] = useState(1);
   const [actual, setActual] = useState('');
+  const [productoID, setPID] = useState(0);
   const [inputP, setIP] = useState({ min: 0, max: 10 });
   const [listaClientes, setClientes] = useState([]);
   const [open, setOpen] = useState(false);
@@ -41,6 +42,7 @@ function PantallaPedido({ isLoged }) {
   const [currentID, setID] = useState("RUC");
   const [cargado, setCargado] = useState(false);
   const [idCliente, setClienteID] = useState([]);
+  const [idVenta, setVenta] =useState(0); 
   //cliente nuevo
   const [nuevoRuc, setNRuc] = useState("");
   const [nuevoNombre, setNNombre] = useState("");
@@ -70,7 +72,32 @@ function PantallaPedido({ isLoged }) {
   };
 
   const handleSubmit = (e) => {
-    handleClose();
+    var axios = require('axios');
+      var data = JSON.stringify({
+        "ruc":nuevoRuc,
+        "nombre": nuevoNombre,
+        "telefono": nuevoTel,
+        "correo": nuevoCorr,
+        "direccion": nuevoDir
+      });
+
+      var config = {
+        method: 'post',
+        url: 'https://localhost:44307/api/apicliente',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      toggleClose(); 
   };
 
   const setNuevoRuc = (e) => {
@@ -107,7 +134,8 @@ function PantallaPedido({ isLoged }) {
       carro: carrito,
       total: total,
       iva: iva,
-      cliente: currentCliente
+      cliente: currentCliente,
+      idcliente: idCliente
     }
   };
 
@@ -134,6 +162,7 @@ function PantallaPedido({ isLoged }) {
       precio: precio,
       total: subTotal,
       faturado: false,
+      id: productoID
     }
     sumarTotal(subTotal);
     var nuevo = [...carrito];
@@ -146,6 +175,7 @@ function PantallaPedido({ isLoged }) {
     setPrecio(e.PRODUCTOId.precio);
     setStock(e.cantidad);
     setActual(e.PRODUCTOId.nombre);
+    setPID(e.PRODUCTOId.PRODUCTOId);
     var IP = { min: 0, max: e.cantidad };
     setIP(IP);
   };
@@ -163,26 +193,71 @@ function PantallaPedido({ isLoged }) {
   ];
 
   const guardarPedido = async (e) => {
-    var date;
-    date = new Date();
-    date = date.getUTCFullYear() + '-' +
-      ('00' + (date.getUTCMonth() + 1)).slice(-2) + '-' +
-      ('00' + date.getUTCDate()).slice(-2) + ' '
-
     var axios = require('axios');
-    var data = {
-      CLIENTEId: idCliente,
-      ENCARGADOId: 3,
-      estado: 'Pendiente',
-      fecha: date,
-      iva: iva, 
-      total: total, 
-    }; 
-    var nuevo = JSON.stringify(data); 
-    api.post('https://localhost:44307/api/apiventas', nuevo)
-      .then(response=>console.log(response.data))
-      .catch(err=>console.log(err))
-    console.log(data);
+    var data = JSON.stringify({
+      "estado": "PENDIENTE",
+      "total": total,
+      "iva": iva,
+      "CLIENTEId": {
+        "credito": idCliente
+      },
+      "ENCARGADOId": {
+        "ENCARGADOId": 1
+      },
+      "fecha": "2021-09-01"
+    });
+
+    var config = {
+      method: 'post',
+      url: 'https://localhost:44307/api/apiventas',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log("Id respuesta: ",response.data.VENTAId);
+        guardarCarrito(response.data.VENTAId);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  const guardarCarrito = async (e) => {
+    carrito.map((elem) => {
+      var axios = require('axios');
+      var data = JSON.stringify({
+        "PRODUCTOId": {
+          "precio": elem.id 
+        },
+        "VENTAId": {
+          "iva": e
+        },
+        "cantidad":elem.cantidad, 
+        "precio":elem.precio,
+        "subtotal":elem.total
+      });
+
+      var config = {
+        method: 'post',
+        url: 'https://localhost:44307/api/apiventas_detalles',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    })
   }
 
   if (!true) {
@@ -200,7 +275,7 @@ function PantallaPedido({ isLoged }) {
             <div className="col-md-4 col-sm-12 add-margin">
               <div className="container align-items-left">
                 <div className="row align-self-end">Fecha: {new Date().toLocaleString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ''}</div>
-                <div className="row align-self-end">Encargado: Dalila Castelnovo</div>
+                <div className="row align-self-end">Encargado: Sebastian Caballero</div>
               </div>
             </div>
 
@@ -226,11 +301,12 @@ function PantallaPedido({ isLoged }) {
             <Dialog
               open={open}
               onClose={handleClose}>
-              <form className="container" onSubmit={handleSubmit}>
+              <form className="container" onSubmit={(e) => handleSubmit()}>
                 <DialogTitle className="row" id='add-cliente-dialog'>Agregar Cliente Nuevo</DialogTitle>
                 <DialogContent>
                   <TextField
                     autoFocus
+                    required={true}
                     className="row col-12"
                     margin="dense"
                     id="ruc-nuevo"
@@ -240,6 +316,7 @@ function PantallaPedido({ isLoged }) {
                   ></TextField>
                   <TextField
                     autoFocus
+                    required={true}
                     className="row col-12"
                     margin="dense"
                     id="nombre-nuevo"

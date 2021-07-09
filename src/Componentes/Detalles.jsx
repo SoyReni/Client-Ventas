@@ -13,6 +13,7 @@ function Detalles() {
     const toggle = (e) => {
         setModal(!modal)
     }
+
     //Push añade uno o mas elemento al final del array y devuelve la nueva longitud de este
     const columns = [
         { title: 'Cuota', field: 'cuota', type: 'numeric' },

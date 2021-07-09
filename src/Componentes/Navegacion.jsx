@@ -1,26 +1,19 @@
 import React, {useState} from 'react';
 import { Navbar, Form, Button, } from 'reactstrap';
-import GetPedidoVenta from './GetPedidoVenta';
 import Detalles from './Detalles';
 import Informe from './Informe';
 import PedidoVenta from './PedidoVenta';
 import PantallaPedido from './PantallaPedido';
 import VerPedido from './VerPedido';
+import Login from './Login'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Login.css'
 import { Redirect } from 'react-router-dom';
 import { BrowserRouter, Switch, Route, Link, NavLink } from 'react-router-dom';
 
 
 function Navegacion({ isLoged }) {
     const [loged, setLoged] = useState(isLoged); 
-
-    /*const Unlog = (e) => {
-        this.setState({
-            isLoged : false
-        })
-        localStorage.setItem('token', 'false'); 
-    } */
-
-    
 
     if (true) {
         return (
@@ -36,16 +29,19 @@ function Navegacion({ isLoged }) {
                         <Link to="/Informe" className="btn btn-primary">
                             Informes
                         </Link>
+                        <Link to="/CuentaCorriente" className="btn btn-primary">
+                            Cuenta Corriente
+                        </Link>
                     </div>
-                    <Form inline>
-                        <Button color="primary">Cerrar Sesion</Button>
-                    </Form>
+                        <Link to="/Login" className="btn btn-primary right">Cerrar Sesion</Link>
                 </Navbar>
 
                 <Switch>
                     <Route path="/Informe" component={Informe} />
                     <Route path="/PantallaPedido" component={PantallaPedido}/>
                     <Route path="/verPedido" component={VerPedido}/>
+                    <Route path="/Login" component={Login}/>
+                    <Route path="/CuentaCorriente" component={Detalles}/>
                     <Route path="/" component={PedidoVenta} />
                 </Switch>
             </BrowserRouter>

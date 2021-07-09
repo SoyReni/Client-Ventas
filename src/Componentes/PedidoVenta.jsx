@@ -55,11 +55,11 @@ function PedidoVenta({ isLoged }) {
   }
   
   const columns = [
-    { align: 'left', title: 'ID', field: 'VENTAId', type: 'numeric' },
-    { align: 'left', title: 'Fecha de emision', field: 'fecha' },
-    { align: 'left', title: 'Encargado', field: 'ENCARGADOId.nombre' },
-    { align: 'left', title: 'Cliente', field: 'CLIENTEId.nombre' },
-    { align: 'left', title: 'Estado', field: 'estado' }
+    { align: 'left', title: 'ID', field: 'VENTAId', type: 'numeric', width: 10 },
+    { align: 'left', title: 'Fecha de emision', field: 'fecha', width: 100 },
+    { align: 'left', title: 'Encargado', field: 'ENCARGADOId.nombre', width: 100 },
+    { align: 'left', title: 'Cliente', field: 'CLIENTEId.nombre', width: 100 },
+    { align: 'left', title: 'Estado', field: 'estado', width: 100}
   ]
 
   if (!true) {
@@ -100,7 +100,7 @@ function PedidoVenta({ isLoged }) {
           }}
           options={{
             actionsColumnIndex: -1,
-            showTitle: false,
+            showTitle: true,
             search: true,
             filtering: true,
             headerStyle: {

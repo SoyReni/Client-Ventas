@@ -8,14 +8,14 @@ import { Container } from 'reactstrap';
 import { Redirect, useLocation } from 'react-router-dom';
 import DatosFacturacion from './DatosFacturacion';
 
-function VerPedido({ isLoged, pedido, carro, cliente }) {
+function VerPedido() {
   const loc = useLocation();
   const data = loc.state;
   
 
   const [datos, setDatos] = useState({
-    encargado: 'Dalila Castelnovo',
-    fecha: '12/12/21',
+    encargado: 'Sebastian Caballero',
+    fecha: new Date().getDate,
   });
 
   const columns = [
@@ -82,7 +82,7 @@ function VerPedido({ isLoged, pedido, carro, cliente }) {
           <div className="row"><label className="col-12 resumen-label">IVA: {data.iva}</label></div>
         </div>
         </TableContainer>
-        <DatosFacturacion facturado={datos.facturado} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} carrito={data.carro} total={data.total} iva={data.iva}/>
+        <DatosFacturacion facturado={false} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} carrito={data.carro} total={data.total} iva={data.iva} idCiente={data.idcliente}/>
       </Container>
     )
   }

@@ -18,10 +18,7 @@ function Login({ isLoged }) {
             .then((result) => {
                 var a = localStorage.setItem('datos', JSON.stringify(result.data.UserDetails));
                 if (result.data.status == '200') {
-                    { () => setLoged(true) }
-                    localStorage.setItem('token', 'true');
-                    console.log(localStorage.getItem('token'));
-                    console.log(result.data.status);
+                    console.log(result);
                     history.push({
                         pathname: '/home',
                         appState: {

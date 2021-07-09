@@ -4,13 +4,15 @@ import MaterialTable, { MTableToolbar } from 'material-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Container } from 'react-bootstrap';
 import { TableRow, TableCell } from '@material-ui/core';
-
+import axios from 'axios';
 
 
 function FacturaEmitida() {
     const [listaInforme, setLista] = useState([])
     const [suma, setSuma] = useState(0);
     const [saldo, setSaldo] = useState(0);
+    const [cargado, setCargado] = useState(false);
+    const api = axios.create();
 
     const totalInforme = (e) => {
         let sumaParcial = 0;
@@ -28,20 +30,32 @@ function FacturaEmitida() {
             })
         setSaldo(saldoTotal);
     }
+
+    const componentDidMount = (e) => {
+        if (!cargado) {
+            api.get("https://localhost:44307/api/APIFACTURAS").then(response => {
+                setLista(response.data);
+                console.log(listaInforme);
+                setCargado(true);
+                totalInforme();
+                saldoInforme();
+            });
+        }
+    }
     /* Estado
     Pendiente 0
     Pagado es 1*/
     const columns = [
-        { title: 'Nro Factura', field: 'nroFactura', type: 'numeric', filtering: false, width: 150 },
-        { title: 'Fecha', field: 'fecha', width: 100 },
-        { title: 'Cliente               ', field: 'cliente', width: 100 },
-        { title: 'Cliente RUC', field: 'clienteRuc', width: 100 },
+        { title: 'Cliente', field: 'CLIENTEId.nombre', width: 100 },
+        { title: 'Cliente RUC', field: 'CLIENTEId.ruc', width: 100 },
         { title: 'Estado', field: 'estado', width: 100, render: (row) => <div className={row.estado ? "pagado" : "pendiente"}>{row.estado ? "Pagado" : "Pendiente"}</div> },
         { title: 'Condicion', field: 'condicion', width: 100 },
-        { title: 'Vendido Por', field: 'vendidoPor', width: 100 },
+        { title: 'Vendido Por', field: 'ENCARGADOId.nombre', width: 100 },
         { title: 'Total', field: 'total', filtering: false, width: 100 },
+        { title: 'IVA', field: 'iva', filtering: false, width: 100 },
         { title: 'Saldo', field: 'saldo', filtering: false, width: 100 }
     ]
+    componentDidMount();
     return (
         <Container>
             <Table bordered hover responsive>
