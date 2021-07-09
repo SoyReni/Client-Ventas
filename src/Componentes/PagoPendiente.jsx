@@ -4,10 +4,7 @@ import MaterialTable, { MTableToolbar } from 'material-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Container } from 'react-bootstrap';
 import { TableRow, TableCell } from '@material-ui/core';
-
-
-
-function PagoRealizado() {
+function PagoPendiente() {
     const [listaInforme, setLista] = useState([]); 
     const [saldo, setSaldo] = useState(0); 
     const [suma, setSuma] = useState(0); 
@@ -40,8 +37,6 @@ function PagoRealizado() {
         { title: 'Monto a Pagar ', field: 'saldo', filtering: false, width: 100 },
         { title: 'Monto Pagado', field: 'total', filtering: false, width: 100 },
     ]
-    totalInforme(); 
-    saldoInforme(); 
     return (
         <Container>
             <Table bordered hover responsive>
@@ -99,4 +94,4 @@ function PagoRealizado() {
 }
 
 
-export default PagoRealizado;
+export default PagoPendiente;

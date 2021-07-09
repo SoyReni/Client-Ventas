@@ -30,7 +30,6 @@ function VerPedido({ isLoged, pedido, carro, cliente }) {
       <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
     )
   } else {
-    console.log(data); 
     return (
       
       <Container className='text-center tabla'>
@@ -83,7 +82,7 @@ function VerPedido({ isLoged, pedido, carro, cliente }) {
           <div className="row"><label className="col-12 resumen-label">IVA: {data.iva}</label></div>
         </div>
         </TableContainer>
-        <DatosFacturacion facturado={datos.facturado} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} />
+        <DatosFacturacion facturado={datos.facturado} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} carrito={data.carro} total={data.total} iva={data.iva}/>
       </Container>
     )
   }

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Navbar, Form, Button, } from 'reactstrap';
 import GetPedidoVenta from './GetPedidoVenta';
+import Detalles from './Detalles';
 import Informe from './Informe';
 import PedidoVenta from './PedidoVenta';
 import PantallaPedido from './PantallaPedido';
@@ -32,9 +33,6 @@ function Navegacion({ isLoged }) {
                         <Link to="/PantallaPedido" className="btn btn-primary">
                             Pedido Nuevo
                         </Link>
-                        <Link to="/GetPedidoVenta" className="btn btn-primary">
-                            Cuenta corriente
-                        </Link>
                         <Link to="/Informe" className="btn btn-primary">
                             Informes
                         </Link>
@@ -46,7 +44,6 @@ function Navegacion({ isLoged }) {
 
                 <Switch>
                     <Route path="/Informe" component={Informe} />
-                    <Route path="/GetPedidoVenta" component={GetPedidoVenta} />
                     <Route path="/PantallaPedido" component={PantallaPedido}/>
                     <Route path="/verPedido" component={VerPedido}/>
                     <Route path="/" component={PedidoVenta} />

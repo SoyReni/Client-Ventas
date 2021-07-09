@@ -40,8 +40,15 @@ function PantallaPedido({ isLoged }) {
   const [currentCliente, setCliente] = useState([])
   const [currentID, setID] = useState("RUC");
   const [cargado, setCargado] = useState(false);
+  const [idCliente, setClienteID] = useState([]);
+  //cliente nuevo
+  const [nuevoRuc, setNRuc] = useState("");
+  const [nuevoNombre, setNNombre] = useState("");
+  const [nuevoTel, setNTel] = useState("");
+  const [nuevoCorr, setNCorr] = useState("");
+  const [nuevoDir, setNDir] = useState("");
 
-  const clientesDidMount = (e) => {
+  const clientesDidMount = async (e) => {
     if (!cargadoClientes) {
       api.get("https://localhost:44307/api/APICLIENTE").then(response => {
         setClientes(response.data);
@@ -66,11 +73,32 @@ function PantallaPedido({ isLoged }) {
     handleClose();
   };
 
+  const setNuevoRuc = (e) => {
+    setNRuc(e + " ");
+  }
+
+  const setNuevoNombre = (e) => {
+    setNNombre(e + " ");
+  }
+
+  const setNuevoTel = (e) => {
+    setNTel(e + " ");
+  }
+
+  const setNuevoCorreo = (e) => {
+    setNCorr(e + " ");
+  }
+
+  const setNuevoDir = (e) => {
+    setNCorr(e + " ");
+  }
+
+
   const setClientePorID = async (e) => {
-      setCliente(e),
-      console.log(currentCliente),
+    setCliente(e),
       setID(e.ruc),
-      setClienteString(e.nombre)
+      setClienteString(e.nombre),
+      setClienteID(e.CLIENTEId)
   };
 
   const location = {
@@ -78,16 +106,15 @@ function PantallaPedido({ isLoged }) {
     state: {
       carro: carrito,
       total: total,
-      iva: iva, 
+      iva: iva,
       cliente: currentCliente
     }
   };
 
-  const stockDidMount = (e) => {
+  const stockDidMount = async (e) => {
     if (!cargado) {
       api.get("https://localhost:44307/api/apistock").then(response => {
         setListaProducto(response.data);
-        console.log(listaProducto);
         setCargado(true)
       });
     }
@@ -106,18 +133,16 @@ function PantallaPedido({ isLoged }) {
       cantidad: cantidad,
       precio: precio,
       total: subTotal,
-      faturado: false, 
+      faturado: false,
     }
     sumarTotal(subTotal);
     var nuevo = [...carrito];
     nuevo.push(item);
-    console.log(carrito);
     setCarrito(nuevo);
     console.log(carrito);
   };
 
-  const setDatos = (e) => {
-    console.log(e);
+  const setDatos = async (e) => {
     setPrecio(e.PRODUCTOId.precio);
     setStock(e.cantidad);
     setActual(e.PRODUCTOId.nombre);
@@ -126,7 +151,6 @@ function PantallaPedido({ isLoged }) {
   };
 
   const calcularSubtotal = async (event) => {
-    console.log(event);
     setCant(event);
     setSubtotal(event * precio);
   };
@@ -138,13 +162,36 @@ function PantallaPedido({ isLoged }) {
     { align: 'left', title: 'Total', field: 'total' }
   ];
 
+  const guardarPedido = async (e) => {
+    var date;
+    date = new Date();
+    date = date.getUTCFullYear() + '-' +
+      ('00' + (date.getUTCMonth() + 1)).slice(-2) + '-' +
+      ('00' + date.getUTCDate()).slice(-2) + ' '
+
+    var axios = require('axios');
+    var data = {
+      CLIENTEId: idCliente,
+      ENCARGADOId: 3,
+      estado: 'Pendiente',
+      fecha: date,
+      iva: iva, 
+      total: total, 
+    }; 
+    var nuevo = JSON.stringify(data); 
+    api.post('https://localhost:44307/api/apiventas', nuevo)
+      .then(response=>console.log(response.data))
+      .catch(err=>console.log(err))
+    console.log(data);
+  }
+
   if (!true) {
     return (
       <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
     )
   } else {
     clientesDidMount();
-    stockDidMount(); 
+    stockDidMount();
     return (
       <Container className='pedido text-center tabla'>
         <Card className="container llenar">
@@ -189,6 +236,7 @@ function PantallaPedido({ isLoged }) {
                     id="ruc-nuevo"
                     label="RUC"
                     type="text"
+                    onChange={(ev, val) => { setNuevoRuc(ev.target.value) }}
                   ></TextField>
                   <TextField
                     autoFocus
@@ -197,6 +245,7 @@ function PantallaPedido({ isLoged }) {
                     id="nombre-nuevo"
                     label="Nombre o Razon Social"
                     type="text"
+                    onChange={(ev, val) => { setNuevoNombre(ev.target.value) }}
                   ></TextField>
                   <TextField
                     className="row col-12"
@@ -205,6 +254,7 @@ function PantallaPedido({ isLoged }) {
                     id="telefono-nuevo"
                     label="Telefono"
                     type="text"
+                    onChange={(ev, val) => { setNuevoTel(ev.target.value) }}
                   ></TextField>
                   <TextField
                     className="row col-12"
@@ -213,6 +263,7 @@ function PantallaPedido({ isLoged }) {
                     id="correo-nuevo"
                     label="Correo"
                     type="text"
+                    onChange={(ev, val) => { setNuevoCorreo(ev.tartet.value) }}
                   ></TextField>
                   <TextField
                     className="row col-12"
@@ -221,6 +272,7 @@ function PantallaPedido({ isLoged }) {
                     id="direccion-nuevo"
                     label="Direccion"
                     type="text"
+                    onChange={(ev, val) => { setNuevoDir(ev.target.value) }}
                   ></TextField>
                 </DialogContent>
                 <DialogActions className="row col-12">
@@ -299,7 +351,7 @@ function PantallaPedido({ isLoged }) {
           <div className="row"><label className="col-12 resumen-label">Total: {total}</label></div>
           <div className="row"><label className="col-12 resumen-label">IVA: {iva}</label></div>
           <div className="row">
-            <Link className="col-12 btn btn-success boton-aceptar"
+            <Link onClick={(e) => guardarPedido()} className="col-12 btn btn-success boton-aceptar"
               to={location}>
               Guardar
             </Link>

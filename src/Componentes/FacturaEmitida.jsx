@@ -20,7 +20,6 @@ function FacturaEmitida() {
             })
         setSuma(sumaTotal);
     }
-
     const saldoInforme = (e) => {
         let saldoParcial = 0;
         let saldoTotal = listaInforme.map(
@@ -43,9 +42,6 @@ function FacturaEmitida() {
         { title: 'Total', field: 'total', filtering: false, width: 100 },
         { title: 'Saldo', field: 'saldo', filtering: false, width: 100 }
     ]
-
-    saldoInforme(); 
-    totalInforme();
     return (
         <Container>
             <Table bordered hover responsive>

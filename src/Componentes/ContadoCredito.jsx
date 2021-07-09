@@ -8,7 +8,7 @@ import { Container, Button } from 'reactstrap';
 
 function ContadoCredito({ opcion, cliente, ruc }) {
 
-    const metodosPago = [{title: "Efectivo"}, {title:"Cheque"}, {title: "Tarjeta Credito/Debito"}]
+    const metodosPago = [{ title: "Efectivo" }, { title: "Cheque" }, { title: "Tarjeta Credito/Debito" }]
     const [inputP, setIP] = useState({ min: 0, max: 12 });
     const [metodo, setMetodo] = useState("Contado")
     const setMet = async (e) => {
@@ -17,10 +17,11 @@ function ContadoCredito({ opcion, cliente, ruc }) {
 
     if (opcion === "contado") {
         return (
-            <div className="row">
-                <div className="col-6">Nombre o Razon Social: {cliente}</div>
-                <div className="col-6">RUC: {ruc}</div>
+            <div className=" separar row">
+                <div className="separar col-6">Nombre o Razon Social: {cliente}</div>
+                <div className="separar col-6">RUC: {ruc}</div>
                 <Autocomplete
+                    className="separar"
                     id="Metodo de pago"
                     options={metodosPago}
                     onChange={(ev, val) => { setMet(val) }}
@@ -37,13 +38,15 @@ function ContadoCredito({ opcion, cliente, ruc }) {
                 <div className="col-6">Nombre o Razon Social: {cliente}</div>
                 <div className="col-6">RUC: {ruc}</div>
                 <Autocomplete
+                    className="separar"
                     id="Metodo de pago"
                     options={metodosPago}
                     onChange={(ev, val) => { setMet(val) }}
-                    getOptionLabel={(option) => option.title }
+                    getOptionLabel={(option) => option.title}
                     renderInput={(params) => <TextField {...params} label="Metodo de Pago" variant="outlined" />}
                 />
                 <TextField
+                    className="separar"
                     type='number'
                     label="Cantidad Cuotas"
                     inputProps={inputP}
@@ -56,6 +59,7 @@ function ContadoCredito({ opcion, cliente, ruc }) {
         return (
 
             <TextField
+                className="separar"
                 label="Nombre o Razon Social"
                 defaultValue="Pedido Cancelado"
                 InputProps={{ readOnly: true, }}

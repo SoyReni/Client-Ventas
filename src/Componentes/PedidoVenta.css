@@ -79,3 +79,8 @@ label{
 .infoFact{
     background: #E0E0E0;
 }
+
+.separar{
+    margin-top: 20px;
+    display: flex;
+}

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, Divider, RadioGroup, FormControlLabel, R
 import { Container, Button } from 'reactstrap';
 import ContadoCredito from './ContadoCredito';
 
-function DatosFacturacion({ facturado, contado, cliente, ruc, datos}) {
+function DatosFacturacion({ facturado, contado, cliente, ruc, datos, carrito, total, iva}) {
     const [isFacturado, setFacturado] = useState(facturado);
     const [isContado, setContado] = useState(contado);
     const [opcion, setOP] = useState("contado")
@@ -36,11 +36,11 @@ function DatosFacturacion({ facturado, contado, cliente, ruc, datos}) {
                     <CardHeader className="row align-items-left encabezado" title={"Pedido listo para facturar"} subheader={"Datos de la factura"} />
                     <Divider variant="middle" style={{ background: 'black' }} />
                     <CardContent className="row align-items-left encabezado">
-                        <FormControl className="col-12" component="fieldset">
+                        <FormControl  component="fieldset">
                             <RadioGroup aria-label="condicion" name="cond" onChange={handleChange}>
-                                <FormControlLabel value="contado" control={<Radio />} label="Contado" />
-                                <FormControlLabel value="credito" control={<Radio />} label="Credito" />
-                                <FormControlLabel value="cancelado" control={<Radio />} label="Cancelado" />
+                                <FormControlLabel className="col-12" value="contado" control={<Radio />} label="Contado" />
+                                <FormControlLabel className="col-12" value="credito" control={<Radio />} label="Credito" />
+                                <FormControlLabel className="col-12" value="cancelado" control={<Radio />} label="Cancelado" />
                             </RadioGroup>
                         </FormControl>
                         <div className="col-12 row">

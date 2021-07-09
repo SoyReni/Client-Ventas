@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { CardImg, ModalFooter, ModalBody, ModalHeader, Modal, Container, Button } from 'reactstrap';
 import { listaVenta } from '../listaVenta.json';
-import '../css/RegistrarModal.css';
+import "./RegistrarModal.css"
 import { Table } from 'react-bootstrap';
 import MaterialTable, { MTableToolbar } from 'material-table'
 
@@ -23,14 +23,14 @@ function Detalles() {
     ]
     return (
         <Container className="Contenedor" >
-            <Button color="primary" className="btn btn-primary" onClick={this.toggle}>Detalles </Button>
+            <Button color="primary" className="btn btn-primary" onClick={(e) => toggle()}>Detalles </Button>
             {/* Modal de Bootstrap son unas capas ocultas DIV en el codigo web la hacemos visibles con un boton o enlace   */ }
             {
                 /*Cuando se seleccione el boton y este llame a FichaProductos
                 comprabara el estad de modal para mostrarlo en pantalla 
                 isOpen accede al estado de elemento*/
             }
-            <Modal isOpen={this.state.modal} >
+            <Modal isOpen={modal} >
                 {/*Encabezado */}
                 <ModalHeader>
                     {/*{this.props.titulo}*/}
