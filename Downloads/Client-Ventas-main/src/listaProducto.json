@@ -1,0 +1,35 @@
+{
+    "listaProductos": [{
+
+            "titulo": "TUPI SA Reloj smart amazfit gts ",
+            "imagen": "https://www.tupi.com.py/imagen_png/600__600__77f3be-66731_2.png",
+            "descripcion": "Pantalla AMOLED personalizada de 1,65 pulgadas tiene una gama de colores 100 % NTSC.",
+            "precio": "480.000 ",
+            "stock": "3"
+
+        },
+        {
+            "titulo": "ROMAX Store Audífonos Blue Smart Inalámbricos– ROMAX STORE ",
+            "imagen": "https://www.romaxstore.com/wp-content/uploads/2019/10/tca139.jpg",
+            "descripcion": "Audifonos bluetooth duracion maxima 20 horas ",
+            "precio": "480.000",
+            "stock": "5"
+        },
+        {
+            "titulo": "ROMAX Store Audífonos Blue Smart Inalámbricos– ROMAX STORE ",
+            "imagen": "https://www.romaxstore.com/wp-content/uploads/2019/10/tca139.jpg",
+            "descripcion": "Audifonos bluetooth duracion maxima 20 horas ",
+            "precio": "480.000",
+            "stock": "5"
+        },
+        {
+            "titulo": "TUPI SA Reloj smart amazfit gts ",
+            "imagen": "https://www.tupi.com.py/imagen_png/600__600__77f3be-66731_2.png",
+            "descripcion": "Pantalla AMOLED personalizada de 1,65 pulgadas tiene una gama de colores 100 % NTSC.",
+            "precio": "480.000 ",
+            "stock": "3"
+
+        }
+    ]
+
+}

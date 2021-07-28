@@ -1,0 +1,147 @@
+
+function App(){
+  const url = "https://localhost:44345/api/tickets"
+  const [data, setData]=useState([]);
+    
+  const peticionGet = async() =>{
+        await axios.get(url)
+        .then(response=>{
+            setData(response,data);
+        }).catch(error=>{console.log(error)})
+    }
+    useEffect(()=>{
+      peticionGet();
+  },[]);
+
+      return(
+      <div className="vacio">
+        <nav className="navbar">
+        <div className="logo text-right col-6">
+                <img className="logo" src={logo} alt=""/> 
+        </div>
+        <p className='logo col-6 text-left titulo vacio'>Lazy Gato</p> 
+        </nav>
+        <Tableros tickets={data}></Tableros>
+        <footer className="footer">
+          Sebastian Caballero &amp; Dalila Castelnovo - TE 2021
+        </footer>
+      </div>
+      )};
+  
+export default App;
+
+
+  const url = "https://localhost:44307/api/APIVENTAs"
+    const [data, setData] = useState([]);
+
+    const peticionGet = async () => {
+      await axios.get(url)
+        .then(response => {
+          setData(response, data);
+        }).catch(error => { console.log(error) })
+      console.log(data);
+    }
+    useEffect(() => {
+      peticionGet();
+    }, []);
+
+
+     const cookies = new Cookies();
+  
+    const [form ,setForm]=useState({
+        usuario:'',
+         contraseña: ''
+
+    });
+
+            
+    const handleChange=e=>{
+     const {name,value}=e.target;
+     setForm({
+            ...form,
+                [name]:value
+               
+            
+        });
+        console.log(form);
+       
+    }
+    
+    const iniciarSesion=async()=>{
+        await axios.get(baseUrl + `/${form.usuario} /${md5(form.contraseña)}`)
+        .then(response=>{
+           return response.data;//te retorna el usuario si los dos campos coinciden
+        })
+        .then(response=>{
+            if(response.length>0){
+                var respuesta=response[0];
+                cookies.set('id', respuesta.id, {path: "/"}); //Las variables de inicio de sesion
+                cookies.set('usuario', respuesta.usuario, {path: "/"});
+                alert('Bienvenido ');
+               
+            }
+            else{
+                alert('Inicio de Sesión Incorrecto');
+            }
+            
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+
+    }
+    
+
+
+
+    
+    <BrowserRouter>
+            <Navbar color="primary" variant="dark" >
+                <div className="btn-group">
+                    <Link to="/PedidoVenta" className="btn btn-primary"> 
+                          Pedido de Venta 
+                    </Link>     
+                    <Link to="/PantallaPedido" className="btn btn-primary">
+                         PantallaPedido
+                    </Link> 
+                    <Link to="/GetPedidoVenta" className="btn btn-primary">
+                         Cuenta corriente
+                    </Link>
+                    <Link to="/Informe" className="btn btn-primary">
+                         Informes
+                    </Link>
+                </div>
+         </Navbar>
+         <Switch>
+             <Route path="/Informe">
+                 <Informe/>|
+
+             </Route>
+
+             <Route path="/GetPedidoVenta">
+                 <GetPedidoVenta/>
+
+             </Route>
+
+             
+             <Route path="/PantallaPedido">
+                 <PantallaPedido/>
+
+             </Route>
+
+
+             <Route path="/">
+                 <PedidoVenta/>
+
+             </Route>
+
+             
+         </Switch> 
+
+         </BrowserRouter>
+
+
+          <Route path="/Informe" component={() => <Informe isLoged={true} />} />
+                    <Route path="/GetPedidoVenta" component={() => <GetPedidoVenta isLoged={true} />} />
+                    <Route path="/PantallaPedido" component={() => <PantallaPedido isLoged={true} />} />
+                    <Route path="/PedidoVenta" component={() => <PedidoVenta isLoged={true} />} />

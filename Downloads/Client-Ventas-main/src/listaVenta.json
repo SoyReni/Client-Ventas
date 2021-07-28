@@ -1,0 +1,51 @@
+{
+    "listaVenta": [{
+            "i": 1,
+            "fecha": "27/04/2021",
+            "encargado": "Dahyana Barboza",
+            "cliente": "Pedro Perez",
+            "estado": "Completo"
+
+        },
+        {
+            "i": 2,
+            "fecha": "01/04/2021",
+            "encargado": "Ada Melgarejo",
+            "cliente": "Carlos Perez",
+            "estado": "Completo"
+
+        },
+        {
+            "i": 3,
+            "fecha": "08/02/2021",
+            "encargado": "Sebastian Caballero",
+            "cliente": "Nidia Cano",
+            "estado": "Pendiente"
+
+        },
+        {
+            "i": 4,
+            "fecha": "08/01/2021",
+            "encargado": "Dalila Castelnovo",
+            "cliente": "Martin Cano",
+            "estado": "Pendiente"
+
+        },
+        {
+            "i": 5,
+            "fecha": "08/01/2021",
+            "encargado": "Gissel Perez",
+            "cliente": "Martin Cano",
+            "estado": "Pendiente"
+
+        },
+        {
+            "i": 6,
+            "fecha": "08/01/2021",
+            "encargado": "Laura Mendoza",
+            "cliente": "Martin Cano",
+            "estado": "Pendiente"
+
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+npm i react-router-dom //Para el manejo de las rutas
+axios //Para las peticiones httpp
+ bootrstrap		Para estilos
+ universal-cookie  //Para el manejo de las cokies
+md5			//para manejar los archivos decifrados 

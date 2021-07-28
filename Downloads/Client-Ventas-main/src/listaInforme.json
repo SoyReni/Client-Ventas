@@ -1,0 +1,66 @@
+{
+    "listaInforme": [{
+
+
+            "nroFactura": "520",
+            "fecha": "27/05/2020",
+            "cliente": "Pedro Perez",
+            "clienteRuc": "3478525-1",
+            "estado": 0,
+            "condicion": "Credito",
+            "vendidoPor": "Super User",
+            "total": "480.000 ",
+            "saldo": "200.000 "
+
+
+
+        },
+        {
+
+            "nroFactura": "577",
+            "fecha": "27/05/2020",
+            "cliente": "Erika Silva",
+            "clienteRuc": "3478544-1",
+            "estado": 1,
+            "condicion": "Contado",
+            "vendidoPor": "Super User",
+            "total": "480.000 ",
+            "saldo": "0 "
+
+
+
+        },
+
+        {
+
+            "nroFactura": "520",
+            "fecha": "27/05/2020",
+            "cliente": "Pedro Perez",
+            "clienteRuc": "3478525-1",
+            "estado": 1,
+            "condicion": "Contado",
+            "vendidoPor": "Super User",
+            "total": "480.000 ",
+            "saldo": "0 "
+
+
+
+        },
+        {
+
+            "nroFactura": "520",
+            "fecha": "27/05/2020",
+            "cliente": "Pedro Perez",
+            "clienteRuc": "3478525-1",
+            "estado": 0,
+            "condicion": "Credito",
+            "vendidoPor": "Super User",
+            "total": "400.000 ",
+            "saldo": "50.000 "
+
+
+
+        }
+    ]
+
+}
