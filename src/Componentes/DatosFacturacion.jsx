@@ -8,8 +8,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import { FormControl, Select, MenuItem, Chip, Input, TextField } from '@material-ui/core';
+import { FormControl, Select, MenuItem, Chip, Input, TextField, Paper } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
+import {useReactToPrint} from 'react-to-print'
 
 function DatosFacturacion() {
     const api = axios.create();
@@ -39,6 +40,12 @@ function DatosFacturacion() {
     const [nfa, setnfa] = useState(0);
     const encargado = useState(JSON.parse(sessionStorage.getItem("Encargado")));
     const [razon, setRazon] = useState("");
+    const [printfecha, seprintfecha] = useState(new Date().toLocaleString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '')
+    const [printnombre, setprintnombre] = useState("");
+    //factura
+    const [printcontado, setContado] = useState("X");
+    const [printcredito, setCred] = useState("");
+    const [imprimirdetalles, setimprimirdet] = useState([]);
 
     const toggleOpen = (e) => {
         setOpen(true);
@@ -81,6 +88,7 @@ function DatosFacturacion() {
                 .then(response => {
                     setEstado(response.data[0].estado);
                     setPedido(response.data[0]);
+                    setprintnombre(response.data[0].CLIENTEId.nombre)
                     getFactura(response.data[0].VENTAId);
                     setItems(response.data[0].detalles.map(
                         (pedido, i) => {
@@ -88,7 +96,27 @@ function DatosFacturacion() {
                                 <MenuItem value={pedido.nombre}>{pedido.nombre}: cant({pedido.cantidad}) </MenuItem>
                             )
                         }
+                    ));
+                    setimprimirdet(response.data[0].detalles.map(
+                        (pedido, i) => {
+
+                            return (
+                                <div className="row col-12">
+                                    <div className="col-2">{pedido.cantidad}</div>
+                                    <div className="row col-10">
+                                        <div className="col-6">{pedido.nombre}</div>
+                                        <div className="row col-6">
+                                            <div className="col-3">{pedido.precio}</div>
+                                            <div className="col-3">0</div>
+                                            <div className="col-3">0</div>
+                                            <div className="col-3">{pedido.total}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
                     ))
+
                 }).catch(error => console.log(error));
             setCargado(true);
         }
@@ -107,7 +135,7 @@ function DatosFacturacion() {
 
     const emitirNotaCredito = (e) => {
         var axios = require('axios');
-        var iv = Math.round(monto/11); 
+        var iv = Math.round(monto / 11);
         var data = JSON.stringify({
             "FACTURAId": {
                 "saldo": nfa
@@ -118,7 +146,7 @@ function DatosFacturacion() {
             "concepto": concepto,
             "razon": razon,
             "monto": monto,
-            "iva": iv  
+            "iva": iv
         });
 
         var config = {
@@ -136,7 +164,7 @@ function DatosFacturacion() {
             .catch(function (error) {
                 console.log(error);
             });
-          }
+    }
 
     const handleCondChange = (e) => {
         setCond(e.target.value);
@@ -144,11 +172,15 @@ function DatosFacturacion() {
             setSaldo(0);
             setEstadoFact("PAGADO");
             setEsCred(true)
+            setContado("")
+            setCred("X")
         }
-        else if (e.target.value === "CONTADO"){
+        else if (e.target.value === "CONTADO") {
             setSaldo(pedido.total);
             setEstadoFact("PENDIENTE");
             setEsCred(false)
+            setContado("X")
+            setCred("")
         }
         setSelected(true);
     };
@@ -358,7 +390,7 @@ function DatosFacturacion() {
         axios.put(url, {
             "VENTAId": p,
             "estado": "FACTURADO",
-            "total": pedido.total, 
+            "total": pedido.total,
             "iva": pedido.iva
         })
             .then(response => {
@@ -371,8 +403,8 @@ function DatosFacturacion() {
 
     const handleSubmitFact = async (e) => {
         var axios = require('axios');
-        let v = "PAGADO"; 
-        if (condicion === "CREDITO") {v = "PENDIENTE"} 
+        let v = "PAGADO";
+        if (condicion === "CREDITO") { v = "PENDIENTE" }
         var data = JSON.stringify({
             "condicion": condicion,
             "ENCARGADOId": {
@@ -405,6 +437,7 @@ function DatosFacturacion() {
             .then(function (response) {
                 console.log(response.data.FACTURAId);
                 generarPagoCredito(response.data.FACTURAId);
+                printFactura(); 
             })
             .catch(function (error) {
                 console.log(error);
@@ -454,7 +487,18 @@ function DatosFacturacion() {
     }
 
     const handleRazonChange = (e) => {
-        setRazon(e.target.value); 
+        setRazon(e.target.value);
+    }
+
+    const printFactura = (e) =>{
+        var contenido = document.getElementById("factura-imprimir").innerHTML; 
+        var a = window.open('', '', 'height=500, width=500');
+            a.document.write('<html>');
+            a.document.write('<body > <h1>Div contents are <br>');
+            a.document.write(contenido);
+            a.document.write('</body></html>');
+            a.document.close();
+            a.print();
     }
 
     obtenerPedido();
@@ -480,7 +524,7 @@ function DatosFacturacion() {
                     <form className="row" onSubmit={emitirNotaCredito}>
                         <DialogTitle className="col-12" id='add-cliente-dialog'>Nota de Credito</DialogTitle>
                         <DialogContent>
-                            <TextField className="col-12" disabled id="standard-disabled" value={pedido.total} label="Total" disabled={true}/>
+                            <TextField className="col-12" disabled id="standard-disabled" value={pedido.total} label="Total" disabled={true} />
                             <FormControl className="col-12">
                                 <InputLabel id="demo-mutiple-chip-label">Productos</InputLabel>
                                 <Select
@@ -617,6 +661,28 @@ function DatosFacturacion() {
                         </DialogActions>
                     </form>
                 </Dialog>
+
+                <div id="factura-imprimir" className="row display-none">
+                    <div className="col-12"></div>
+                    <div className="col-12"></div>
+                    <div className="col-6"></div>
+                    <div className="row col-6">
+                        <div className="col-1">{printcontado}</div>
+                        <div className="col-3"></div>
+                        <div className="col-1">{printcredito}</div>
+                        <div className="col-7"></div>
+                    </div>
+                    <div className="col-12">
+                        <div className="col-4"></div>
+                        <div className="col-9">{printfecha}</div>
+                    </div>
+                    <div className="col-12">
+                        <div className="col-4"></div>
+                        <div className="col-9">{printnombre}</div>
+                    </div>
+                    <div className="col-12"></div>
+                    {imprimirdetalles}
+                </div>
 
             </div>
         )
