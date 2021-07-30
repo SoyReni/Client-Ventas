@@ -4,26 +4,43 @@ import { listaVenta } from '../listaVenta.json';
 import "./RegistrarModal.css"
 import { Table } from 'react-bootstrap';
 import MaterialTable, { MTableToolbar } from 'material-table'
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
-
-function Detalles() {
-    const [listaVenta, setLista] = useState([])
+function Detalles({lista}) {
+    const [listaVenta, setLista] = useState([]);
     const [modal, setModal] = useState(false);
-    //Definimos que modal esta en falso dado que sera activado (puesto en verdadero) mediante un boton
-    const toggle = (e) => {
-        setModal(!modal)
-    }
+    const [cargado, setCargado] = useState(false); 
+    const api = axios.create();
+    const data = lista;
 
+    //Definimos que modal esta en falso dado que sera activado (puesto en verdadero) mediante un boton
+    
+    const componentDidMount = (e) => {
+        if (!cargado) {
+            api.get("https://localhost:44307/api/APIDETALLES_DE_PAGO").then(response => {
+                setLista(response.data.filter((v) => v.FACTURAId == lista.FACTURAId));
+                console.log(response.data)
+                setCargado(true);
+            });
+        }
+    }
+    
+    const toggle = (e) => {
+        componentDidMount(); 
+        setModal(!modal) 
+    }
     //Push añade uno o mas elemento al final del array y devuelve la nueva longitud de este
     const columns = [
-        { title: 'Cuota', field: 'cuota', type: 'numeric' },
-        { title: 'Cliente', field: 'cliente' },
-        { title: 'Fecha de Vencimiento', field: 'fecha' },
-        { title: 'Estado', field: 'estado' }
+        { title: 'Cuota', field: 'numero', type: 'numeric' },
+        { title: 'Cliente', field: 'PAGOSId.CLIENTEId.nombre' },
+        { title: 'Fecha de Vencimiento', field: 'PAGOSId.fechaVenc' },
+        { title: 'Estado', field: 'PAGOSId.estado' }
 
     ]
+
     return (
-        <Container className="Contenedor" >
+        <div >
             <Button color="primary" className="btn btn-primary" onClick={(e) => toggle()}>Detalles </Button>
             {/* Modal de Bootstrap son unas capas ocultas DIV en el codigo web la hacemos visibles con un boton o enlace   */ }
             {
@@ -31,11 +48,11 @@ function Detalles() {
                 comprabara el estad de modal para mostrarlo en pantalla 
                 isOpen accede al estado de elemento*/
             }
-            <Modal isOpen={modal} >
+            <Modal size="lg" isOpen={modal} >
                 {/*Encabezado */}
                 <ModalHeader>
                     {/*{this.props.titulo}*/}
-                    <h3>Detalle Cliente</h3>
+                   
                 </ModalHeader>
                 {/*Cuerpo */}
                 <ModalBody>
@@ -44,6 +61,7 @@ function Detalles() {
                             <MaterialTable
                                 columns={columns}
                                 data={listaVenta}
+                                title='Detalles del Cliente'
                                 components={{
                                     Toolbar: props => (
                                         <div>
@@ -55,15 +73,31 @@ function Detalles() {
                                 }}
                                 options={{
                                     actionsColumnIndex: -1,
-                                    showTitle: false,
-                                    search: false,
-                                    filtering: true,
+                                    showTitle: true,
+                                    search: true,
+                                    filtering: false,
 
                                     headerStyle: {
                                         backgroundColor: '#039be5',
                                         color: '#FFF'
                                     }
 
+                                }}
+                                localization={{
+                                    header:{
+                                    actions: 'Opciones',
+                                    },
+                    
+                                    pagination:{
+                                      labelRowsSelect:'Filas',
+                    
+                                    },
+                                    toolbar:{
+                                      searchTooltip:'Buscar',
+                                      searchPlaceholder:'Buscar'
+                    
+                    
+                                    }
                                 }}
 
                             />
@@ -77,7 +111,7 @@ function Detalles() {
                 </ModalFooter>
             </Modal>
 
-        </Container>
+        </div>
     );
 }
 

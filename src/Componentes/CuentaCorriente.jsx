@@ -1,67 +1,76 @@
-import React, { useState } from 'react';
-import './Informe.css';
-import MaterialTable, { MTableToolbar } from 'material-table'
+import React, { useState, useEffect } from 'react';
+//import '../css/TablaInforme.css';
+import { Table, TableContainer, TableCell, TableBody, TableRow, TableHead } from '@material-ui/core';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Container } from 'react-bootstrap';
-import { TableRow, TableCell } from '@material-ui/core';
+//import {listaVenta} from '../listaVenta.json';
+import { Container, Button, Row, Form } from 'reactstrap';
+import Detalles from './Detalles';
+import './PedidoVenta.css';
+import axios from 'axios';
 
 function CuentaCorriente() {
-    const [listaInforme, setLista] = useState([]);
-    const columns = [
-        { title: 'Cuota', field: 'cuota', type: 'numeric' },
-        { title: 'Cliente', field: 'cliente' },
-        { title: 'Fecha de Vencimiento', field: 'fecha' },
-        { title: 'Estado', field: 'estado' }
 
-    ]
-    /* Estado
-    Pendiente 0
-    Pagado es 1*/
-    return (
-        <Container className="tab">
-            <Table bordered hover responsive>
-                <MaterialTable
-                    title="Cuenta Corriente"
-                    columns={columns}
-                    data={listaInforme}
-                    components={{
-                        Toolbar: props => (
-                            <div>
-                                <MTableToolbar {...props} />
-                                <div color="primary" style={{ padding: '0px 10px', color: '#039be5' }}>
-                                </div>
-                            </div>
-                        ),
-                    }}
-                    options={{
-                        actionsColumnIndex: -1,
-                        showTitle: true,
-                        search: false,
-                        pagination: false,
-                        exportButton: true,
-                        filtering: true,
+  const [listaVenta, setListaVenta] = useState([]);
+  const [cargado, setCargado] = useState(false); 
+  const api = axios.create();
 
-                        headerStyle: {
-                            backgroundColor: '#039be5',
-                            color: '#FFF'
-                        }
+  const ventaDimount = (e) => {
+    if (!cargado) {
+      api.get("https://localhost:44307/api/APIFACTURAS").then(response => {
+        setListaVenta(response.data.filter(fact => fact.condicion === "CREDITO"));
+        setCargado(true)
+      }).catch(error => console.log(error));
+    }
+  }
+  
+  ventaDimount();
 
-                    }}
-                    localization={{
-                        header: {
-                            actions: 'Opciones',
-                        },
-                        toolbar: {
-                            exportPDFName: 'Generar PDF',
-                            exportCSVName: 'Generar Excel',
-                            searchTooltip: 'Buscar',
-                            searchPlaceholder: 'Buscar'
-                        }
-                    }}
+  const arregloPedido = listaVenta.map(
+    (listaVenta, i) => {
+      return (
+        <TableRow key={i}>
+          <TableCell>{listaVenta.FACTURAId} </TableCell>
+          <TableCell>{listaVenta.factNum} </TableCell>
+          <TableCell>{listaVenta.CLIENTEId.nombre} </TableCell>
+          <TableCell>{listaVenta.VENTAId.fecha} </TableCell>
+          <TableCell><Detalles lista={listaVenta}/></TableCell>
 
-                />
-            </Table>
-        </Container>
-    );
+        </TableRow>
+      )
+    }
+  )
+  return (
+    <div className="tabla">
+      <TableContainer>
+
+        <Table className="table table-striped">
+
+          <TableHead>
+            <TableRow className="bg-primary navegacion">
+              <TableCell>ID</TableCell>
+              <TableCell>Factura</TableCell>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Fecha Emision</TableCell>
+              <TableCell>Acciones</TableCell>
+
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+
+            {arregloPedido}
+
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <div className="center">
+
+
+
+      </div>
+    </div>
+  )
 }
+
 export default CuentaCorriente;

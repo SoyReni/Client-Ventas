@@ -4,11 +4,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
 import { Redirect, useHistory } from "react-router-dom";
 
-function Login({ isLoged }) {
-    const [Loged, setLoged] = useState(false);
+function Login() {
     const [empleado, setEmpleado] = useState({ usuario: '', contraseña: '' });
     const baseUrl = "https://localhost:44307/api/employee/login";
     const api = axios.create(); 
+    const log = sessionStorage.getItem("token")
 
     let history = useHistory();
     const Login = (e) => {
@@ -16,13 +16,13 @@ function Login({ isLoged }) {
         const data = { usuario: empleado.usuario, contraseña: empleado.contraseña };
         api.post(baseUrl, data)
             .then((result) => {
-                var a = localStorage.setItem('datos', JSON.stringify(result.data.UserDetails));
                 if (result.data.status == '200') {
-                    console.log(result);
+                    sessionStorage.setItem("token", "true"); 
+                    sessionStorage.setItem("Encargado", JSON.stringify(result.data.UserDetails));
                     history.push({
                         pathname: '/home',
-                        appState: {
-                          isLoged: true
+                        state: {
+                          encargado: result.data.UserDetails
                         }
                       });
                 }
@@ -34,7 +34,7 @@ function Login({ isLoged }) {
         setEmpleado({ ...empleado, [e.target.name]: e.target.value });
     }
 
-    if (!isLoged) {
+    if (log === null) {
         return (
             <div className="card o-hidden border-0 text-center tarjeta shadow-lg my-5">
                 <div className="card-body p-5">
@@ -49,12 +49,13 @@ function Login({ isLoged }) {
                         <button type="submit" className="btn btn-info mb-1"><span>Ingresar</span></button>
                         <hr />
                     </form>
+                    <div>Tiene algun problema con el inicio de sesion? Contacte con el administrador al +595(975)161771</div>
                 </div>
             </div>
         )
     } else {
         return (
-            <Redirect to={{ pathname:"/", state: {isLoged: true}}}/>
+            <Redirect to={{ pathname:"/"}}/>
         )
     }
 }

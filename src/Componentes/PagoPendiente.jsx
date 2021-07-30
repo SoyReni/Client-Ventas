@@ -4,10 +4,15 @@ import MaterialTable, { MTableToolbar } from 'material-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Container } from 'react-bootstrap';
 import { TableRow, TableCell } from '@material-ui/core';
+import axios from 'axios';
+
 function PagoPendiente() {
     const [listaInforme, setLista] = useState([]); 
     const [saldo, setSaldo] = useState(0); 
     const [suma, setSuma] = useState(0); 
+    const [cargado, setCargado] = useState(false);
+    const api = axios.create();
+
     const totalInforme = (e) => {
         let sumaParcial = 0;
         let sumaTotal = listaInforme.map(
@@ -27,18 +32,29 @@ function PagoPendiente() {
     /* Estado
     Pendiente 0
     Pagado es 1*/
+    const componentDidMount = (e) => {
+        if (!cargado) {
+            api.get("https://localhost:44307/api/APIPAGOS").then(response => {
+                setLista(response.data.filter((v) => v.estado === "PENDIENTE"));
+                console.log(listaInforme);
+                setCargado(true);
+                saldoInforme();
+            });
+        }
+    }
+
     const columns = [
-        { title: 'Nro Factura', field: 'nroFactura', type: 'numeric', filtering: false, width: 150 },
+        { title: 'Nro Factura', field: 'FACTURAId.factnum', type: 'numeric', filtering: false, width: 150 },
         { title: 'Fecha de Factura', field: 'fecha', width: 100 },
-        { title: 'Cliente ', field: 'cliente', width: 100 },
-        { title: 'Cliente RUC', field: 'clienteRuc', width: 100 },
-        { title: 'Fecha de Vencimiento', field: 'fecha', width: 100 },
-        { title: 'Estado', field: 'estado', width: 100, filtering: false, render: (row) => <div className={row.estado ? "pagado" : "pendiente"}>{row.estado ? "Pagado" : "Pendiente"} </div> },
-        { title: 'Monto a Pagar ', field: 'saldo', filtering: false, width: 100 },
+        { title: 'Cliente ', field: 'CLIENTEId.nombre', width: 100 },
+        { title: 'RUC', field: 'CLIENTEId.ruc', width: 100 },
+        { title: 'ENCARGADO', field: 'FACTURAId.ENCARGADOId.nombre'},
+        { title: 'Fecha de Vencimiento', field: 'fechaVenc', width: 100 },
         { title: 'Monto Pagado', field: 'total', filtering: false, width: 100 },
     ]
+    componentDidMount();
     return (
-        <Container>
+        <div>
             <Table bordered hover responsive>
                 <MaterialTable
                     title="Pagos Realizados"
@@ -57,14 +73,14 @@ function PagoPendiente() {
                     options={{
                         actionsColumnIndex: -1,
                         showTitle: true,
-                        search: false,
+                        search: true,
                         pagination: false,
                         exportButton: true,
-                        filtering: true,
+                        filtering: false,
                         headerStyle: {
-                            backgroundColor: '#039be5',
+                            backgroundColor: '#B8B8B8',
                             color: '#FFF'
-                        }
+                          }
                     }}
                     localization={{
                         header: {
@@ -89,7 +105,7 @@ function PagoPendiente() {
                         <TableCell align="right">{Intl.NumberFormat("de-DE").format(saldo)}</TableCell>
                     </TableRow>
                 </Table>
-        </Container>
+        </div>
     );
 }
 

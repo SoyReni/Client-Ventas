@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import { Navbar, Form, Button, } from 'reactstrap';
-import Detalles from './Detalles';
+import React, { useState } from 'react';
+import { Navbar } from 'reactstrap';
+import CuentaCorriente from './CuentaCorriente';
 import Informe from './Informe';
 import PedidoVenta from './PedidoVenta';
 import PantallaPedido from './PantallaPedido';
@@ -9,13 +9,22 @@ import Login from './Login'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css'
 import { Redirect } from 'react-router-dom';
-import { BrowserRouter, Switch, Route, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
+function Navegacion() {
+    const [log, setLog] = useState(sessionStorage.getItem("token"));
 
-function Navegacion({ isLoged }) {
-    const [loged, setLoged] = useState(isLoged); 
+    const unlog = (e) => {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("Encargado");
+        setLog(null);
+    }
 
-    if (true) {
+    if (log === null) {
+        return (
+            <Redirect to={{ pathname: "/login"}} />
+        )
+    } else {
         return (
             <BrowserRouter>
                 <Navbar color="primary" variant="dark" >
@@ -33,24 +42,27 @@ function Navegacion({ isLoged }) {
                             Cuenta Corriente
                         </Link>
                     </div>
-                        <Link to="/Login" className="btn btn-primary right">Cerrar Sesion</Link>
+                    <Link onClick={(e) => unlog()} className="btn btn-primary right"
+                        to={{pathname: '/Login'}}>
+                        Cerrar Sesion
+                    </Link>
                 </Navbar>
 
                 <Switch>
-                    <Route path="/Informe" component={Informe} />
-                    <Route path="/PantallaPedido" component={PantallaPedido}/>
-                    <Route path="/verPedido" component={VerPedido}/>
-                    <Route path="/Login" component={Login}/>
-                    <Route path="/CuentaCorriente" component={Detalles}/>
+                    <Route path="/Informe"
+                        component={Informe} />
+                    <Route path="/PantallaPedido"
+                        component={PantallaPedido} />
+                    <Route path="/verPedido"
+                        component={VerPedido} />
+                    <Route path="/Login"
+                        component={Login} />
+                    <Route path="/CuentaCorriente"
+                        component={CuentaCorriente} />
                     <Route path="/" component={PedidoVenta} />
                 </Switch>
             </BrowserRouter>
         );
-
-    } else {
-        return (
-            <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
-        )
     }
 }
 export default Navegacion;

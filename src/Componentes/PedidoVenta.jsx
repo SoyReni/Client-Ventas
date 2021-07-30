@@ -1,75 +1,72 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './PedidoVenta.css';
-import MaterialTable, { MTableToolbar } from 'material-table'
-import Typography from '@material-ui/core/Typography'
-import { Edit, Delete, Check, SaveAlt, Visibility, RemoveShoppingCartRounded } from '@material-ui/icons'
+import MaterialTable from 'material-table'
+import { Visibility } from '@material-ui/icons'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Button, Row } from 'reactstrap';
-import { Redirect, useHistory, Link, useLocation } from 'react-router-dom';
+import { Redirect, Link, useLocation } from 'react-router-dom';
 
-function PedidoVenta({ isLoged }) {
+function PedidoVenta() {
   const [listaVenta, setListaVenta] = useState([])
   const api = axios.create();
   const [cargado, setCargado] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const log = useState(sessionStorage.getItem("token"));
+  const encargado = useState(JSON.parse(sessionStorage.getItem("Encargado")));
+  const loc = useLocation();
+  const data = loc.state;
 
   const componentDidMount = (e) => {
     if (!cargado) {
       api.get("https://localhost:44307/api/APIVENTAs").then(response => {
         setListaVenta(response.data),
-          console.log(listaVenta);
-        setCargado(true),
-          console.log(true)
+          setCargado(true)
       });
     }
   }
 
-  const history = useHistory();
-  const verPedido = (e) => {
-    setSelected(e);
-    console.log(e);
-    console.log(selected);
-    history.push({
-      pathname: '/PedidoDetalles',
-      appState: {
-        isLoged: true,
-        pedido: selected
-      }
-    });
+  const locationB = {
+    pathname: '/VerPedido'
+  }
+  const location = useState(locationB);
+  const definirLocation = (e) => {
+    sessionStorage.setItem("pedido", e.VENTAId);
+    console.log(sessionStorage.getItem("pedido"))
   }
 
-  const [location, setLocation] = useState([]); 
-  const definirLocation = async (e) =>{
-    var locationN = {
-      pathname: '/verPedido',
-      state: {
-        carro: [],
-        total: e.VENTAId.total,
-        iva: e.VENTAId.iva, 
-        cliente: e.CLIENTEId
-      }
-    };   
-    setLocation(locationN);  
-    console.log(location);  
-  }
-  
   const columns = [
     { align: 'left', title: 'ID', field: 'VENTAId', type: 'numeric', width: 10 },
     { align: 'left', title: 'Fecha de emision', field: 'fecha', width: 100 },
     { align: 'left', title: 'Encargado', field: 'ENCARGADOId.nombre', width: 100 },
     { align: 'left', title: 'Cliente', field: 'CLIENTEId.nombre', width: 100 },
-    { align: 'left', title: 'Estado', field: 'estado', width: 100}
+    {
+      align: 'left', title: 'Estado', field: 'estado',
+      lookup: { "PENDIENTE": 'Pendiente', "FACTURADO": 'Facturado', "CANCELADO": 'Cancelado' }, width: 100,
+      render: rowData => {
+        return (
+          rowData.estado === "PENDIENTE" ? <p style={{ background: "#FFC300", color: "#ffffff" }}>{rowData.estado}</p> :
+            rowData.estado === "FACTURADO" ? <p style={{ background: "#3BFF00", color: "#ffffff" }}>{rowData.estado}</p> :
+              <p style={{ background: "#FF5733", color: "#ffffff" }}>{rowData.estado}</p>
+        )
+      }
+    }
   ]
 
-  if (!true) {
+  if (log === null) {
     return (
-      <Redirect to={{ pathname: "/login", state: { isLoged: false } }} />
+      <Redirect to={{ pathname: "/login" }} />
     )
   } else {
     componentDidMount();
     return (
       <div className='tabla'>
+        <div className="row">
+          <h5 className="titulo col-md-6 col-sm-12">Bienvenido {encargado[0].nombre}</h5>
+          <div className="card-body col-md-6 col-sm-12">
+            <div className="center">
+              <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'><h5>Nuevo Pedido +</h5></Link>
+            </div>
+          </div>
+        </div>
         <MaterialTable
           title='Lista de pedidos'
           columns={columns}
@@ -88,12 +85,11 @@ function PedidoVenta({ isLoged }) {
           components={{
             Action: props => (
               <Link
-                to={location}
                 onClick={(event) => props.action.onClick(event, props.data)}
-                color="primary"
-                variant="contained"
-                size="small"
-              >
+                className="btn btn-success boton-aceptar"
+                to={{
+                  pathname: '/VerPedido'
+                }}>
                 Ver
               </Link>
             ),
@@ -109,11 +105,6 @@ function PedidoVenta({ isLoged }) {
             }
           }}
         />
-        <div className="card-body">
-          <div className="center">
-            <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'>Nuevo Pedido</Link>
-          </div>
-        </div>
       </div>
     );
   }

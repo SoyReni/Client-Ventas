@@ -3,6 +3,18 @@ div.center {
     text-align: right;
 }
 
+
+.navegacion {
+    margin: 20%;
+    color: white;
+    font-family: Arial;
+    background-color: rgb(241, 143, 143);
+    color: rgb(237, 242, 243);
+}
+
+.tablaC {
+    margin: 2%;
+}
 .tabla {
     padding: 2%;
 }
@@ -30,10 +42,12 @@ div.center {
     margin-top: 10px;
     width: 100%;
     height: 50px;
+    float: right;
 }
 
 .resumen{
     margin-top: 10px;
+    padding-top: 40px;
     width: 40%;
     float: right; 
 }
@@ -62,10 +76,6 @@ label{
     width: 100%;
     height: 100%;
 }
-.informacion{
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
 .fact{
     padding: 0;
     background: #E0E0E0;
@@ -85,4 +95,66 @@ label{
     padding-bottom: 5px;
     padding-left: 0;
     padding-right: 0;
+}
+
+.titulo{
+    color: black;
+    padding: 20px;
+    text-align: left;
+}
+
+h5{
+    float: left;
+}
+
+.encabezado{
+    border: black;
+}
+
+.btn-eliminar{
+    background-color: lightsalmon;
+}
+
+.add{
+    display: block;
+}
+
+.padre{
+    display: table;
+}
+
+.hijo, .cant-label{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.plus{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.add-padding{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+ .cant{
+     justify-content: center;
+ }
+
+.take-padding{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.take-padding-bottom{
+    padding-bottom: 0;
+}
+
+.tabla{
+    padding-right: 2%;
+}
+
+p{
+    border-radius: 5px;
+    padding: 5px;
 }

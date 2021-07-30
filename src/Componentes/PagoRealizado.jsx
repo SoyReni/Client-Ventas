@@ -1,38 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './Informe.css';
 import MaterialTable, { MTableToolbar } from 'material-table'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Container } from 'react-bootstrap';
-import {TableRow, TableCell } from '@material-ui/core';
+import {TableRow, TableCell, Select , MenuItem } from '@material-ui/core';
+import axios from 'axios';
 
 function PagoRealizado() {
-    const [listaInforme, setLista] = useState([]);
+    const [listaInforme, setLista] = useState([]); 
+    const [saldo, setSaldo] = useState(0); 
+    const [suma, setSuma] = useState(0); 
     const [total, setTotal] = useState(0);
+    const [cargado, setCargado] = useState(false);
+    const api = axios.create();
 
     const totalInforme = (e) => {
-        let suma = 0;
+        let sumaParcial = 0;
         let sumaTotal = listaInforme.map(
             (val) => {
-                suma += parseInt(val.total) * 1000;
-
-
+                sumaParcial += parseInt(val.total) * 1000;
             })
-        setTotal(total)
+        setTotal(sumaTotal); 
+    }
+    const saldoInforme = (e) => {
+        let saldoParcial = 0;
+        let saldoTotal = listaInforme.map(
+            (val) => {
+                saldoParcial += parseInt(val.saldo) * 1000;
+            });
+        setSaldo(saldoTotal); 
     }
     /* Estado
     Pendiente 0
     Pagado es 1*/
+    const componentDidMount = (e) => {
+        if (!cargado) {
+            api.get("https://localhost:44307/api/APIPAGOS").then(response => {
+                setLista(response.data.filter((v) => v.estado === "PAGADO"));
+                console.log(listaInforme);
+                setCargado(true);
+                totalInforme(); 
+            });
+        }
+    }
+
     const columns = [
-        { title: 'Nro Factura', field: 'nroFactura', type: 'numeric', filtering: false, width: 150 },
-        { title: 'Fecha', field: 'fecha', width: 100 },
-        { title: 'Cliente  ', field: 'cliente', width: 100 },
-        { title: 'Cliente RUC', field: 'clienteRuc', width: 100 },
-        { title: 'Condicion', field: 'condicion', width: 100 },
-        { title: 'Vendido Por', field: 'vendidoPor', width: 100 },
+        { title: 'Nro Factura', field: 'FACTURAId.factnum', type: 'numeric', filtering: false, width: 150 },
+        { title: 'Fecha de Factura', field: 'fecha', width: 100 },
+        { title: 'Cliente ', field: 'CLIENTEId.nombre', width: 100 },
+        { title: 'RUC', field: 'CLIENTEId.ruc', width: 100 },
+        { title: 'ENCARGADO', field: 'FACTURAId.ENCARGADOId.nombre'},
+        { title: 'Fecha de Vencimiento', field: 'fechaVenc', width: 100 },
         { title: 'Monto Pagado', field: 'total', filtering: false, width: 100 },
     ]
+    componentDidMount();
     return (
-        <Container>
+        
+        <div>
+        
+
             <Table bordered hover responsive>
                 <MaterialTable
                     title="Pagos Realizados"
@@ -50,12 +76,12 @@ function PagoRealizado() {
                     options={{
                         actionsColumnIndex: -1,
                         showTitle: true,
-                        search: false,
+                        search: true,
                         pagination: false,
                         exportButton: true,
-                        filtering: true,
+                        filtering: false,
                         headerStyle: {
-                            backgroundColor: '#039be5',
+                            backgroundColor: '#B8B8B8',
                             color: '#FFF'
                         }
                     }}
@@ -78,7 +104,7 @@ function PagoRealizado() {
                     <TableCell align="right">{Intl.NumberFormat("de-DE").format(total)}</TableCell>
                 </TableRow>
             </Table>
-        </Container>
+        </div>
     );
 }
 export default PagoRealizado;

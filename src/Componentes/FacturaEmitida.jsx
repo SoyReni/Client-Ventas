@@ -42,22 +42,29 @@ function FacturaEmitida() {
             });
         }
     }
-    /* Estado
-    Pendiente 0
-    Pagado es 1*/
     const columns = [
+        { title: 'Nro. Fact.', field: 'factNum', width: 100 },
         { title: 'Cliente', field: 'CLIENTEId.nombre', width: 100 },
-        { title: 'Cliente RUC', field: 'CLIENTEId.ruc', width: 100 },
-        { title: 'Estado', field: 'estado', width: 100, render: (row) => <div className={row.estado ? "pagado" : "pendiente"}>{row.estado ? "Pagado" : "Pendiente"}</div> },
+        { title: 'RUC', field: 'CLIENTEId.ruc', width: 100 },
+        {
+            title: 'Estado', field: 'estado', width: 100,
+            lookup: { "PAGADO": 'Pagado', "PENDIENTE": 'Pendiente'}, 
+            render: rowData => {
+                return (
+                    rowData.estado === "PENDIENTE" ? <p style={{ background: "#FFC300", color: "#ffffff" }}>{rowData.estado}</p> :
+                            <p style={{ background: "#3BFF00", color: "#ffffff" }}>{rowData.estado}</p>
+                )
+            }
+        },
         { title: 'Condicion', field: 'condicion', width: 100 },
-        { title: 'Vendido Por', field: 'ENCARGADOId.nombre', width: 100 },
+        { title: 'Encargado', field: 'ENCARGADOId.nombre', width: 100 },
         { title: 'Total', field: 'total', filtering: false, width: 100 },
         { title: 'IVA', field: 'iva', filtering: false, width: 100 },
         { title: 'Saldo', field: 'saldo', filtering: false, width: 100 }
     ]
     componentDidMount();
     return (
-        <Container>
+        <div>
             <Table bordered hover responsive>
                 <MaterialTable
                     title="Facturas Emitidas"
@@ -75,12 +82,12 @@ function FacturaEmitida() {
                     options={{
                         actionsColumnIndex: -1,
                         showTitle: true,
-                        search: false,
+                        search: true,
                         pagination: false,
                         exportButton: true,
-                        filtering: true,
+                        filtering: false,
                         headerStyle: {
-                            backgroundColor: '#039be5',
+                            backgroundColor: '#B8B8B8',
                             color: '#FFF'
                         }
                     }}
@@ -107,7 +114,7 @@ function FacturaEmitida() {
                     <TableCell align="right">{Intl.NumberFormat("de-DE").format(saldo)}</TableCell>
                 </TableRow>
             </Table>
-        </Container>
+        </div>
     );
 }
 
