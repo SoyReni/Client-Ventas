@@ -213,3 +213,17 @@ components={{
         </TableContainer>
         <DatosFacturacion facturado={false} contado={true} cliente={data.cliente.nombre} ruc={data.cliente.ruc} carrito={data.carro} total={data.total} iva={data.iva} idCiente={data.idcliente}/>
        
+
+       components={{
+                        Action: props => (
+                            <Link
+                                onClick={(event) => props.action.onClick(event, props.data)}
+                                className="btn btn-success boton-aceptar"
+                                to={{
+                                    pathname: '/VerPedido',
+                                    state: {id: this.state.pedido}
+                                }}>
+                                Ver
+                            </Link>
+                        ),
+                    }}

@@ -1,0 +1,68 @@
+.body {
+    font-family: sans-serif;
+    width: 100%;
+    margin: auto;
+    padding: 50px 450px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    align-items: center;
+    border: #240ee8;
+}
+
+h3 {
+    text-align: center;
+}
+
+h2 {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #240ee8;
+}
+
+input {
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 10px;
+    border: none;
+    background: #c2bbbb;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    align-content: center;
+    margin-top: 20px;
+    border: none;
+    width: 100%;
+    font-size: 14px;
+    background: #240ee8;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+}
+
+.user{
+    padding: 0;
+    margin: 0;
+}
+
+.tarjeta {
+    padding: 0; 
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.form-control{
+    margin: 0;
+    width: 100%;
+    margin-top: 20px; 
+}
+
+.right{
+    float: right;
+}
