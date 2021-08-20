@@ -10,6 +10,9 @@ class VerPedido extends Component {
         super(props);
         this.state = {
             pedido: [],
+            iva: "", 
+            total: "",
+            subtotal: "",
             cargado: false,
             api: axios.create()
         }
@@ -29,7 +32,12 @@ class VerPedido extends Component {
             let url = "https://localhost:44307/api/APIVENTAs/" + id;
             this.state.api.get(url)
                 .then(response => {
-                    this.setState({ pedido: response.data[0] });
+                    var sub = response.data[0].total - response.data[0].iva; 
+                    this.setState({ 
+                        pedido: response.data[0],
+                        iva: "\t\tPYG " + response.data[0].iva.toLocaleString(), 
+                        total: "\t\tPYG " + response.data[0].total.toLocaleString(), 
+                        subtotal: "\t\tPYG " + sub.toLocaleString()});
                 }).catch(error => console.log(error));
             this.setState({ cargado: true });
             sessionStorage.setItem("detalles", this.state.pedido.detalles);
@@ -59,8 +67,9 @@ class VerPedido extends Component {
                     <div className="row">
                         <div className="col-6"><DatosFacturacion pedido={this.state.pedido}></DatosFacturacion></div>
                         <div className="col-6 text-right resumen">
-                            <div className="row add-padding take-padding-bottom"><label className="col-12 resumen-label">Total: {this.state.pedido.total}</label></div>
-                            <div className="row"><label className="col-12 resumen-label">IVA: {this.state.pedido.iva}</label></div>
+                            <div className="row add-padding take-padding-bottom"><label className="col-12 resumen-label">Subtotal:{this.state.subtotal}</label></div>
+                            <div className="row take-padding-bottom"><label className="col-12 resumen-label">IVA:{this.state.iva}</label></div>
+                            <div className="row"><label className="col-12 resumen-label">Total:{this.state.total}</label></div>
                         </div>
                     </div>
                 </div>

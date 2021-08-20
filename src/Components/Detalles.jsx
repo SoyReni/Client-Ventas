@@ -38,7 +38,7 @@ function Detalles({lista}) {
 
     return (
         <div >
-            <Button color="primary" className="btn btn-primary" onClick={(e) => toggle()}>Detalles </Button>
+            <Button color="warning" className="btn btn-primary" onClick={(e) => toggle()}>Detalles </Button>
             {/* Modal de Bootstrap son unas capas ocultas DIV en el codigo web la hacemos visibles con un boton o enlace   */ }
             {
                 /*Cuando se seleccione el boton y este llame a FichaProductos
@@ -75,7 +75,7 @@ function Detalles({lista}) {
                                     filtering: false,
 
                                     headerStyle: {
-                                        backgroundColor: '#039be5',
+                                        backgroundColor: '#B8B8B8',
                                         color: '#FFF'
                                     }
 

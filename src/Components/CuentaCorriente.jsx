@@ -45,7 +45,7 @@ function CuentaCorriente() {
         <Table className="table table-striped">
 
           <TableHead>
-            <TableRow className="bg-primary navegacion">
+            <TableRow className=" encabezado navegacion">
               <TableCell>ID</TableCell>
               <TableCell>Factura</TableCell>
               <TableCell>Cliente</TableCell>

@@ -58,9 +58,12 @@ function FacturaEmitida() {
         },
         { title: 'Condicion', field: 'condicion', width: 100 },
         { title: 'Encargado', field: 'ENCARGADOId.nombre', width: 100 },
-        { title: 'Total', field: 'total', filtering: false, width: 100 },
-        { title: 'IVA', field: 'iva', filtering: false, width: 100 },
-        { title: 'Saldo', field: 'saldo', filtering: false, width: 100 }
+        { title: 'Total', field: 'total', filtering: false, width: 100, type: "currency", 
+        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}},
+        { title: 'IVA', field: 'iva', filtering: false, width: 100, type: "currency", 
+        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}},
+        { title: 'Saldo', field: 'saldo', filtering: false, width: 100, type: "currency", 
+        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}}
     ]
     componentDidMount();
     return (

@@ -1,6 +1,6 @@
 
-import '../css/PedidoVenta.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/PedidoVenta.css';
 import axios from 'axios';
 import React, { Component } from 'react';
 
@@ -17,6 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
+import { Divider } from '@material-ui/core';
 
 class VerPedido extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class VerPedido extends Component {
             open: false,
             total: 0,
             iva: 0,
+            subtotal: 0,
             carrito: []
         }
         this.getDatos();
@@ -124,9 +126,13 @@ class VerPedido extends Component {
                 id: this.state.pActual.pid
             }
             console.log(item);
+            var t = this.state.total + item.total;
+            var i = Math.round(t / 11);
+            var s= t - i; 
             this.setState({
-                total: this.state.total + item.total,
-                iva: Math.round((this.state.total + item.total) / 11)
+                total: t,
+                iva: i,
+                subtotal: s 
             });
             var nuevo = [...this.state.carrito];
             nuevo.push(item);
@@ -136,6 +142,18 @@ class VerPedido extends Component {
     }
 
     handleDelete = (e) => {
+        this.state.carrito.forEach(elem => {
+            if((elem.producto + elem.cantidad) === (e.producto + e.cantidad)){
+                var t = this.state.total - elem.total; 
+                var i = (t/11);
+                var s = t - i;  
+                this.setState({
+                    total: t,
+                    iva: i, 
+                    subtotal: s 
+                })
+            }
+        })
         this.setState({
             carrito: this.state.carrito.filter(elem =>
                 ((elem.producto + elem.cantidad) != e.producto + e.cantidad))
@@ -399,8 +417,8 @@ class VerPedido extends Component {
                     ></TextField>
                     <div className="padre row col-md-7 col-sd-12 add-padding">
                         <label className="col-md-3 col-sm-6 hijo">Stock: {this.state.pActual.stock}</label>
-                        <label className="col-md-3 col-sm-6 hijo">Precio u.:{this.state.pActual.precio}</label>
-                        <label className="col-md-4 col-sm-9 hijo">Subtotal.: {this.state.pSeleccionado.subtotal}</label>
+                        <label className="col-md-3 col-sm-6 hijo">Precio: PYG {this.state.pActual.precio.toLocaleString()}</label>
+                        <label className="col-md-4 col-sm-9 hijo">Subtotal: PYG {this.state.pSeleccionado.subtotal.toLocaleString()}</label>
                         <IconButton className="col-md-1 col-sm-3 hijo text-align-right" onClick={(e) => this.addItem()}>
                             <AddBoxIcon className="addbutton" fontSize="large"></AddBoxIcon></IconButton>
                     </div>
@@ -410,8 +428,10 @@ class VerPedido extends Component {
                     columns={[
                         { align: 'left', title: 'Producto', field: 'producto' },
                         { align: 'left', title: 'Cantidad', field: 'cantidad' },
-                        { align: 'left', title: 'Precio unitario', field: 'precio' },
-                        { align: 'left', title: 'Total', field: 'total' }
+                        { align: 'left', title: 'Precio unitario', field: 'precio', type: "currency", 
+                        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}},
+                        { align: 'left', title: 'Total', field: 'total',type: "currency", 
+                        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}}
                     ]}
                     data={this.state.carrito}
                     align='left'
@@ -438,12 +458,14 @@ class VerPedido extends Component {
                     }}
                 />
                 <div className="text-right resumen">
-                    <div className="row"><label className="col-12 resumen-label">Total: {this.state.total}</label></div>
-                    <div className="row"><label className="col-12 resumen-label">IVA: {this.state.iva}</label></div>
+                    <div className="row"><label className="col-12 resumen-label">Subtotal: PYG {this.state.subtotal.toLocaleString()}</label></div>
+                    <div className="row"><label className="col-12 resumen-label">IVA: PYG {this.state.iva.toLocaleString()}</label></div>
+                    <Divider light={false} variant="middle" />
+                    <div className="row"><label className="col-12 resumen-label">Total: PYG {this.state.total.toLocaleString()}</label></div>
                     <div className="row">
-                        <Button onClick={(e, v) => this.guardarPedido()} className="col-12 btn btn-success boton-aceptar">
-                            Guardar
-                        </Button>
+                        <button color="success" onClick={(e, v) => this.guardarPedido()} className="col-12 guardar btn-success boton-aceptar">
+                            Guardar Pedido
+                        </button>
                     </div>
                 </div>
             </div>

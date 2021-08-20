@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import { FormControl, Select, MenuItem, Chip, Input, TextField } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
+import ReactToPrint from "react-to-print";
 import { LocationSearchingOutlined } from '@material-ui/icons';
 
 class DatosFacturacion extends Component {
@@ -39,6 +40,10 @@ class DatosFacturacion extends Component {
 
             escredito: false
         }
+        this.refPagare = React.createRef();
+        this.refFact = React.createRef();
+        this.refNC = React.createRef();
+
     }
 
     emitirNotaCredito = (e) => {
@@ -48,10 +53,10 @@ class DatosFacturacion extends Component {
         var razon = this.state.razon + "";
         var concepto = this.state.concepto + "";
         var nfa = 0;
-        var encargado = this.props.pedido.ENCARGADOId.ENCARGADOId + 0; 
+        var encargado = this.props.pedido.ENCARGADOId.ENCARGADOId + 0;
         var venta = this.props.pedido.VENTAId + 0;
-        
-        console.log(monto, iv, razon, concepto, nfa, encargado, venta); 
+
+        console.log(monto, iv, razon, concepto, nfa, encargado, venta);
 
         let urlF = "https://localhost:44307/api/APIFACTURAs";
         axios.get(urlF)
@@ -80,7 +85,7 @@ class DatosFacturacion extends Component {
 
                 axios(config)
                     .then(function (response) {
-                        console.log(response); 
+                        console.log(response);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -291,7 +296,7 @@ class DatosFacturacion extends Component {
             });
 
 
-        /*Marcar como cancelado*/
+        /*Marcar como facturado*/
         let id = this.props.pedido.VENTAId
         let urlF = "https://localhost:44307/api/APIVENTAs/" + id;
         axios.put(urlF, {
@@ -390,7 +395,7 @@ class DatosFacturacion extends Component {
             return (
                 <div>
                     <h5 className="titulo take-padding-bottom">Pedido Facturado</h5>
-                    <Button onMouseDown={(e) => this.setState({openCred: true})} variant="contained" color="primary">Emitir nota de credito</Button>
+                    <Button onMouseDown={(e) => this.setState({ openCred: true })} variant="contained" color="primary">Emitir nota de credito</Button>
 
                     <Dialog
                         open={this.state.openCred}
@@ -527,11 +532,78 @@ class DatosFacturacion extends Component {
                             </DialogContent>
                             <DialogActions className="row col-12">
                                 <div>
-                                    <Button className="col-6" disabled={!this.state.enable} type="submit" variant="contained" color="primary">Emitir Factura</Button>
+                                        <ReactToPrint
+                                            trigger={() => <Button className="col-6" disabled={!this.state.enable} type="submit" variant="contained" color="primary">Emitir Factura</Button>}
+                                            content={() => this.refFact}
+                                        />
                                 </div>
                             </DialogActions>
                         </form>
                     </Dialog>
+
+                    <div className="row display-none" ref={this.refPagare}>
+                        <div id="containe">
+
+                            <div className="row">
+                                <div className="col-md-4">
+                                    <h4>Proyecto Sistemas de Gestion</h4>
+                                </div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5>Fecha: </h5>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div >----------------------------------------------------------------------</div>
+
+                                <div className="col-md-4 offset-md-4">
+                                    <h5> En esta ciudad a la orden de:</h5>
+                                </div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5> Con CI Nro.: </h5>
+                                </div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5> :</h5>
+                                </div>
+                                <h5> En concepto de pago de articulos informaticos</h5>
+                                <div>.......................</div>
+                                <h5>Firma </h5>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row display-none" ref={this.refFact}>
+                        <div className="row"  >
+                            <div className="row">
+                                <div className="col-md-4">
+                                    <h4>Proyecto Sistemas de Gestion</h4>
+                                </div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5>Fecha:</h5>
+                                    <div><h5>Factura Nro.: </h5></div>
+                                </div>
+
+                                <div className="col-md-4 offset-md-4">
+                                    <h5>Factura Nro.: </h5>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div>----------------------------------------------------------------------</div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5> Nombre o Razon Social:</h5>
+                                </div>
+                                <div className="col-md-4 offset-md-4">
+                                    <h5>RUC o CI:</h5>
+                                </div>
+
+                                <h5> Condicion de la venta: Venta de articulos informaticos</h5>
+                                <div>----------------------------------------------------------------------</div>
+                                <div> </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             )

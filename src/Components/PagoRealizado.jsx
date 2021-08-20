@@ -51,7 +51,8 @@ function PagoRealizado() {
         { title: 'RUC', field: 'CLIENTEId.ruc', width: 100 },
         { title: 'ENCARGADO', field: 'FACTURAId.ENCARGADOId.nombre'},
         { title: 'Fecha de Vencimiento', field: 'fechaVenc', width: 100 },
-        { title: 'Monto Pagado', field: 'total', filtering: false, width: 100 },
+        { title: 'Monto Pagado', field: 'total', filtering: false, width: 100, type: "currency", 
+        currencySetting:{ currencyCode:'PYG', minimumFractionDigits:0, maximumFractionDigits:0}}
     ]
     componentDidMount();
     return (
