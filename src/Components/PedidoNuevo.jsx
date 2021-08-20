@@ -145,7 +145,7 @@ class VerPedido extends Component {
         this.state.carrito.forEach(elem => {
             if((elem.producto + elem.cantidad) === (e.producto + e.cantidad)){
                 var t = this.state.total - elem.total; 
-                var i = (t/11);
+                var i = Math.round(t/11);
                 var s = t - i;  
                 this.setState({
                     total: t,
@@ -270,7 +270,7 @@ class VerPedido extends Component {
                                 <label className="border hijo" >{this.state.cliente.nombre}</label>
                             </div>
                         </div>
-                        <Dialog open={this.state.open}>
+                        <Dialog open={this.state.open} onClose={(e) => this.setState({open: false})}>
                             <form onSubmit={(e) => this.addCliente()}>
                                 <DialogTitle className="row" id='add-cliente-dialog'>Agregar Cliente Nuevo</DialogTitle>
                                 <DialogContent>
@@ -281,7 +281,6 @@ class VerPedido extends Component {
                                         margin="dense"
                                         id="ruc-nuevo"
                                         label="RUC"
-                                        type="number"
                                         onChange={(ev, val) => {
                                             this.setState({
                                                 clienteNuevo: {
@@ -374,8 +373,7 @@ class VerPedido extends Component {
                                 </DialogContent>
                                 <DialogActions className="row col-12">
                                     <div className="container">
-                                        <Button className="col-6" onClick={(e, v) => this.setState({ open: false })} color="primary">Cancelar</Button>
-                                        <Button className="col-6" type="submit" color="primary">Agregar</Button>
+                                        <Button variant="contained" className="col-12" type="submit" color="primary" >Agregar</Button>
                                     </div>
                                 </DialogActions>
                             </form>

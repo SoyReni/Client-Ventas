@@ -13,15 +13,17 @@ function Detalles({lista}) {
 
     //Definimos que modal esta en falso dado que sera activado (puesto en verdadero) mediante un boton
     
-    const componentDidMount = (e) => {
+    const componentDidMount = async (e) => {
+    return new Promise(resolve => {
         if (!cargado) {
-            api.get("https://localhost:44307/api/APIDETALLES_DE_PAGO").then(response => {
+            api.get("https://localhost:44307/api/APIPAGOS").then(response => {
+                console.log(response); 
                 setLista(response.data.filter((v) => v.FACTURAId === lista.FACTURAId));
-                console.log(response.data)
+                console.log(lista); 
                 setCargado(true);
             });
         }
-    }
+    })}
     
     const toggle = (e) => {
         componentDidMount(); 
@@ -29,9 +31,8 @@ function Detalles({lista}) {
     }
     //Push añade uno o mas elemento al final del array y devuelve la nueva longitud de este
     const columns = [
-        { title: 'Cuota', field: 'numero', type: 'numeric' },
-        { title: 'Cliente', field: 'PAGOSId.CLIENTEId.nombre' },
-        { title: 'Fecha de Vencimiento', field: 'PAGOSId.fechaVenc' },
+        { title: 'Cliente', field: 'CLIENTEId.nombre' },
+        { title: 'Fecha de Vencimiento', field: 'fechaVenc' },
         { title: 'Estado', field: 'PAGOSId.estado' }
 
     ]

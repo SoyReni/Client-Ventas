@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import { FormControl, Select, MenuItem, Chip, Input, TextField } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import ReactToPrint from "react-to-print";
-import { LocationSearchingOutlined } from '@material-ui/icons';
+import { LocationSearchingOutlined, SubtitlesTwoTone } from '@material-ui/icons';
 
 class DatosFacturacion extends Component {
     constructor(props) {
@@ -43,63 +43,95 @@ class DatosFacturacion extends Component {
         this.refPagare = React.createRef();
         this.refFact = React.createRef();
         this.refNC = React.createRef();
-
     }
 
-    emitirNotaCredito = (e) => {
-        var axios = require('axios');
-        var monto = this.state.monto + 0;
-        var iv = Math.round(monto / 11);
-        var razon = this.state.razon + "";
-        var concepto = this.state.concepto + "";
-        var nfa = 0;
-        var encargado = this.props.pedido.ENCARGADOId.ENCARGADOId + 0;
-        var venta = this.props.pedido.VENTAId + 0;
-
-        console.log(monto, iv, razon, concepto, nfa, encargado, venta);
-
-        let urlF = "https://localhost:44307/api/APIFACTURAs";
-        axios.get(urlF)
-            .then(response => {
-                var data = JSON.stringify({
-                    "FACTURAId": {
-                        "FACTURAId": response.data.find(val => val.VENTAId.VENTAId === venta).FACTURAId
-                    },
-                    "ENCARGADOId": {
-                        "encargadoNum": encargado
-                    },
-                    "concepto": concepto,
-                    "razon": razon,
-                    "monto": monto,
-                    "iva": iv
-                });
-
-                var config = {
-                    method: 'post',
-                    url: 'https://localhost:44307/api/APINOTAS_DE_CREDITO',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    data: data
-                };
-
-                axios(config)
-                    .then(function (response) {
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
+    emitirNotaCredito = async (e) => {
+        return new Promise(resolve => {
+            var axios = require('axios');
+            var monto = this.state.monto + 0;
+            var iv = Math.round(monto / 11);
+            var razon = this.state.razon + "";
+            var concepto = this.state.concepto + "";
+            var nfa = 0;
+            var encargado = this.props.pedido.ENCARGADOId.ENCARGADOId + 0;
+            var venta = this.props.pedido.VENTAId + 0;
+            var lista = this.state.productosDev;
+            let urlF = "https://localhost:44307/api/APIFACTURAs";
+            axios.get(urlF)
+                .then(response => {
+                    console.log(response);
+                    var data = JSON.stringify({
+                        "FACTURAId": {
+                            "FACTURAId": response.data.find(val => val.VENTAId.VENTAId === venta).FACTURAId
+                        },
+                        "ENCARGADOId": {
+                            "encargadoNum": encargado
+                        },
+                        "concepto": concepto,
+                        "razon": razon,
+                        "monto": monto,
+                        "iva": iv
                     });
-                this.setState({ openCred: false })
-            }).catch(error => console.log(error));
+
+                    var config = {
+                        method: 'post',
+                        url: 'https://localhost:44307/api/APINOTAS_DE_CREDITO',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: data
+                    };
+
+                    axios(config)
+                        .then(function (response) {
+                            console.log(response);
+                            lista.forEach((elem) => {
+                                var pid = 0;
+                                var sub = 0;
+                                var x = response.data;
+                                axios.get('https://localhost:44307/api/apiproductoes')
+                                    .then(function (response) {
+                                        pid = response.data.find((e) => e.nombre === elem).PRODUCTOId;
+                                        sub = response.data.find((e) => e.nombre === elem).precio;
+                                        var detalle = JSON.stringify({
+                                            "NOTAS_DE_CREDITOId": {
+                                                "NOTAS_DE_CREDITOId": x.NOTAS_DE_CREDITOId
+                                            },
+                                            "PRODUCTOId": {
+                                                "numPRODUCTO": pid
+                                            },
+                                            "cantidad": 1,
+                                            "subtotal": sub
+                                        });
+                                        var con = {
+                                            method: 'post',
+                                            url: 'https://localhost:44307/api/APIDETALLES_NOTAS_DE_CREDITO',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            data: detalle
+                                        }
+                                        axios(con)
+                                            .then(function (response) { console.log(response) })
+                                            .catch(function (error) { console.log(error) });
+                                    })
+                                    .catch(function (error) { console.log(error) });
+                            })
+                        })
+                        .catch(function (error) { console.log(error); });
+                    this.setState({ openCred: false })
+                }).catch(error => console.log(error));
+        })
     }
 
-    emitirFactura = (e) => {
+    emitirFactura = async (e) => {
+    return new Promise(resolve => {
         var p = this.props.pedido;
         var res = 0;
         var axios = require('axios');
         let v = "PAGADO";
         var metodo = this.state.metodo + "";
+        var saldo = 0;
         const fechas = [
             "2021-09-20 00:00:00.000",
             "2021-10-20 00:00:00.000",
@@ -117,6 +149,7 @@ class DatosFacturacion extends Component {
         ]
 
         if (this.state.condicion === "CREDITO") {
+            saldo = p.total;
             v = "PENDIENTE";
             this.setState({ escredito: true })
         }
@@ -139,7 +172,7 @@ class DatosFacturacion extends Component {
             "estado": v,
             "total": p.total,
             "iva": p.iva,
-            "saldo": p.total,
+            "saldo": saldo,
             "factNum": nroFact
         });
 
@@ -157,6 +190,7 @@ class DatosFacturacion extends Component {
                 console.log(response);
                 res = response.data.FACTURAId
                 /*Generar pago credito*/
+
                 if (condicion === "CREDITO") {
                     /*Factura Credigo: n pagos*/
                     for (let i = 0; i < cuotas; i++) {
@@ -204,7 +238,7 @@ class DatosFacturacion extends Component {
                                     },
                                     "numero": i + 1
                                 })
-                                var config = {
+                                var configdet = {
                                     method: 'post',
                                     url: 'https://localhost:44307/api/APIDETALLES_DE_PAGO',
                                     headers: {
@@ -212,7 +246,7 @@ class DatosFacturacion extends Component {
                                     },
                                     data: pagoDetalleNuevo
                                 };
-                                axios(config)
+                                axios(configdet)
                                     .then(function (response) {
                                     })
                                     .catch(function (error) {
@@ -223,6 +257,7 @@ class DatosFacturacion extends Component {
                                 console.log(error);
                             });
                     }
+
                 } else {
                     /*Factur Contado: 1 pago*/
                     var pagoNuevo = JSON.stringify({
@@ -241,7 +276,7 @@ class DatosFacturacion extends Component {
                         "estado": "PAGADO"
                     })
                     console.log(pagoNuevo);
-                    var configPago = {
+                    var configPago1 = {
                         method: 'post',
                         url: 'https://localhost:44307/api/APIPAGOs',
                         headers: {
@@ -249,9 +284,8 @@ class DatosFacturacion extends Component {
                         },
                         data: pagoNuevo
                     };
-                    axios(configPago)
+                    axios(configPago1)
                         .then(function (response) {
-                            console.log(response.data.PAGOSId);
                             var pagoDetalleNuevo = JSON.stringify({
                                 "FACTURAId": res,
                                 "FORMAS_DE_PAGOId": {
@@ -270,8 +304,7 @@ class DatosFacturacion extends Component {
                                 },
                                 "numero": 1
                             })
-                            console.log(pagoDetalleNuevo);
-                            var config = {
+                            var configdet1 = {
                                 method: 'post',
                                 url: 'https://localhost:44307/api/APIDETALLES_DE_PAGO',
                                 headers: {
@@ -279,7 +312,7 @@ class DatosFacturacion extends Component {
                                 },
                                 data: pagoDetalleNuevo
                             };
-                            axios(config)
+                            axios(configdet1)
                                 .then(function (response) {
                                 })
                                 .catch(function (error) {
@@ -314,9 +347,10 @@ class DatosFacturacion extends Component {
 
         this.setState({ openFact: false })
 
-    }
+    })}
 
-    cancelarPedido = (e) => {
+    cancelarPedido = async (e) => {
+        return new Promise(resolve => {
         var axios = require('axios');
         var id = this.props.pedido.VENTAId;
         let url = "https://localhost:44307/api/APIVENTAs/" + id;
@@ -330,20 +364,7 @@ class DatosFacturacion extends Component {
             .catch(error => {
                 console.log(error);
             });
-    }
-
-    setItems = (e) => {
-        var it = this.props.pedido.detalles.map(
-            (pedido, i) => {
-                return (
-                    <MenuItem value={pedido.nombre}>
-                        {pedido.nombre}: cant({pedido.cantidad})
-                    </MenuItem>
-                )
-            }
-        )
-        this.setState({ items: it })
-    }
+    })}
 
     changeCond = (e) => {
         this.setState({ condicion: e });
@@ -403,7 +424,7 @@ class DatosFacturacion extends Component {
                         <form className="row" onSubmit={(e) => this.emitirNotaCredito()}>
                             <DialogTitle className="col-12" id='add-cliente-dialog' onClose={(e) => this.setState({ openCred: false })}>Nota de Credito</DialogTitle>
                             <DialogContent>
-                                <TextField className="col-12" id="standard-disabled" value={this.state.pedido.total} label="Total" disabled={true} />
+                                <TextField className="col-12" id="standard-disabled" value={this.props.pedido.total.toLocaleString()} label="Total" disabled={true} />
                                 <FormControl className="col-12">
                                     <InputLabel id="demo-mutiple-chip-label">Productos</InputLabel>
                                     <Select
@@ -420,7 +441,15 @@ class DatosFacturacion extends Component {
                                                 ))}
                                             </div>
                                         )}>
-                                        {this.state.items}
+                                        {this.props.pedido.detalles.map(
+                                            (pedido, i) => {
+                                                return (
+                                                    <MenuItem value={pedido.nombre}>
+                                                        {pedido.nombre} : {pedido.precio.toLocaleString()}
+                                                    </MenuItem>
+                                                )
+                                            }
+                                        )}
                                     </Select>
                                 </FormControl>
                                 <FormControl className="col-12">
@@ -532,10 +561,10 @@ class DatosFacturacion extends Component {
                             </DialogContent>
                             <DialogActions className="row col-12">
                                 <div>
-                                        <ReactToPrint
-                                            trigger={() => <Button className="col-6" disabled={!this.state.enable} type="submit" variant="contained" color="primary">Emitir Factura</Button>}
-                                            content={() => this.refFact}
-                                        />
+                                    <ReactToPrint
+                                        trigger={() => <Button className="col-6" disabled={!this.state.enable} type="submit" variant="contained" color="primary">Emitir Factura</Button>}
+                                        content={() => this.refFact}
+                                    />
                                 </div>
                             </DialogActions>
                         </form>

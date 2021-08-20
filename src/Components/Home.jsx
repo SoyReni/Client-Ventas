@@ -44,7 +44,7 @@ class Home extends Component {
                     <h5 className="titulo col-md-6 col-sm-12">Bienvenido {this.state.encargado.nombre}</h5>
                     <div className="card-body col-md-6 col-sm-12">
                         <div className="center">
-                            <Link className="btn btn-success boton-aceptar" to='/PantallaPedido'><h5>Nuevo Pedido +</h5></Link>
+                            <Link className="btn btn-success boton-aceptar" to='/Nuevo'><h5>Nuevo Pedido +</h5></Link>
                         </div>
                     </div>
                 </div>
